@@ -12,7 +12,7 @@ public final class SunmiBtPrinter {
         if (instance == null) {
             synchronized (SunmiBtPrinter.class) {
                 if (instance == null) {
-                    instance = new SunmiBtPrinter(ctx);
+                    instance = new SunmiBtPrinter(ctx.getApplicationContext());
                 }
             }
         }
