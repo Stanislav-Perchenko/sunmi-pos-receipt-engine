@@ -7,6 +7,9 @@ import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 public final class MultiLineTextTemplateItem extends TextTemplateItem {
 
     public MultiLineTextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
@@ -24,5 +27,12 @@ public final class MultiLineTextTemplateItem extends TextTemplateItem {
     public String getTypeJsonValue() {
         return TYPE_JSON_VALUE;
     }
-    
+
+
+    /************************  Build ESC/POS printer raw data  ************************************/
+    @Override
+    public Collection<byte[]> getPrinterRawData() {
+        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        return new LinkedList<>();
+    }
 }

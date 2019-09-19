@@ -7,9 +7,13 @@ import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collection;
+
 public interface ITemplateItem {
 
     String getTypeJsonValue();
+
+    Collection<byte[]> getPrinterRawData();
 
     @Nullable
     static ITemplateItem optFromJson(JSONObject jObj, ParameterValueMapper valueMapper) throws JSONException {

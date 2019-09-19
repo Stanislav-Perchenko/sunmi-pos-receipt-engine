@@ -7,6 +7,8 @@ import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public final class SingleValueTemplateItem extends BaseTemplateItem {
@@ -103,5 +105,12 @@ public final class SingleValueTemplateItem extends BaseTemplateItem {
     @Override
     public String getTypeJsonValue() {
         return TYPE_JSON_VALUE;
+    }
+
+    /************************  Build ESC/POS printer raw data  ************************************/
+    @Override
+    public Collection<byte[]> getPrinterRawData() {
+        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        return new LinkedList<>();
     }
 }

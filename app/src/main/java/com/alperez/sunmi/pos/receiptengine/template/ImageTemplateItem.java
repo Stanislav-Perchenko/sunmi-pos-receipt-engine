@@ -8,6 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 
 public final class ImageTemplateItem extends BaseTemplateItem {
     private final byte[] imageData;
@@ -46,5 +48,12 @@ public final class ImageTemplateItem extends BaseTemplateItem {
     @Override
     public String getTypeJsonValue() {
         return TYPE_JSON_VALUE;
+    }
+
+    /************************  Build ESC/POS printer raw data  ************************************/
+    @Override
+    public Collection<byte[]> getPrinterRawData() {
+        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        return new LinkedList<>();
     }
 }
