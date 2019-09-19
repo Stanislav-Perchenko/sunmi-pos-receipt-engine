@@ -1,0 +1,211 @@
+{
+  "print_mode": "text",
+  "data": [
+    {
+      "type": "single_text",
+      "text": "{organization.title: text}",
+      "all_caps": true,
+      "bold": true,
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "{organization.address[0]: text}",
+      "all_caps": true,
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "{organization.address[1]: text}",
+      "all_caps": true,
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "TEL: {organization.telephone: text}",
+      "all_caps": true,
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "FAX: {organization.fax: text}",
+      "all_caps": true,
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "Email: {organization.email: text}",
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "Website: {organization.web: text}",
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "multiline_text",
+      "text": "\nCollection receipt & Waste Transfer Note\n",
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 0,
+      "scale_h": 0,
+      "name": "Shop Name: ",
+      "name_is_bold": false,
+      "value": "{shop.name: text}",
+      "value_is_bold": false,
+      "value_align": "left"
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 0,
+      "scale_h": 0,
+      "name": "Shop Code: ",
+      "name_is_bold": false,
+      "value": "{shop.code: text}",
+      "value_is_bold": false,
+      "value_align": "left"
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 0,
+      "scale_h": 0,
+      "name": "Receipt # ",
+      "name_is_bold": false,
+      "value": "{receipt_number: int}",
+      "value_is_bold": false,
+      "value_align": "left"
+    },
+    {
+      "type": "single_text",
+      "text": "\nDate: {now_timestamp: timestamp(%1$td/%1$tm/%1$tY %1$tR)}\n",
+      "text_align": "right",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "\nPayment Method: {payment_method: text}\n",
+      "text_align": "right",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 0,
+      "scale_h": 0,
+      "name": "Customer: ",
+      "name_is_bold": false,
+      "value": "{customer.name: text}",
+      "value_is_bold": false,
+      "value_align": "left"
+    },
+    {
+      "type": "image",
+      "src": "{customer.signature: byte[]}"
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 0,
+      "scale_h": 0,
+      "name": "Driver: ",
+      "name_is_bold": false,
+      "value": "{driver_name: text}",
+      "value_is_bold": false,
+      "value_align": "left"
+    },
+    {
+      "type": "multiline_text",
+      "text": "\nBy signing in the section above I confirm that i have fulfilled my duty to apply the waste hierarchy as required by Regulation 12 of the Waste (England and Wales) regulations\n",
+      "text_align": "left",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "EWC codes\n",
+      "all_caps": true,
+      "text_align": "left",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "table",
+      "n_columns": 2,
+      "col_widths": [31, 69],
+      "col_aligns": ["center", "left"],
+      "col_start_padding": [0, 1],
+      "rows": [
+        {
+          "border": "START",
+          "cells": [
+            "{ewc_codes[0].code: text}",
+            "{ewc_codes[0].title: text}"
+          ]
+        },{
+          "border": "MIDDLE",
+          "cells": [
+            "{ewc_codes[1].code: text}",
+            "{ewc_codes[1].title: text}"
+          ]
+        },{
+          "border": "MIDDLE",
+          "cells": [
+            "{ewc_codes[2].code: text}",
+            "{ewc_codes[2].title: text}"
+          ]
+        },{
+          "border": "MIDDLE",
+          "cells": [
+            "{ewc_codes[3].code: text}",
+            "{ewc_codes[3].title: text}"
+          ]
+        },{
+          "border": "END",
+          "cells": [
+            "{ewc_codes[4].code: text}",
+            "{ewc_codes[4].title: text}"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "multiline_text",
+      "text": "This receipt will enable you to claim recycling credits where applicable\n",
+      "text_align": "left",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "Waste carrier license:{organization.waste_carrier_license: text}",
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    },
+    {
+      "type": "single_text",
+      "text": "VAT Registration #: {organization.vat_reg_number: long}",
+      "text_align": "center",
+      "scale_w": 0,
+      "scale_h": 0
+    }
+  ]
+}
