@@ -1,6 +1,6 @@
 package com.alperez.sunmi.pos.receiptengine.template;
 
-import com.sunmi.printerhelper.receipt.parammapper.ParameterValueMapper;
+import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
 
 import org.json.JSONArray;
 import org.json.JSONException;

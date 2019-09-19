@@ -2,7 +2,7 @@ package com.alperez.sunmi.pos.receiptengine.template;
 
 import androidx.annotation.NonNull;
 
-import com.sunmi.printerhelper.receipt.parammapper.ParameterValueMapper;
+import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
