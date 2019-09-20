@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ReceiptTemplate receiptTemplate;
 
+    private TextView vTxtInProgress;
     private View vProgress;
 
     @Override
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         vProgress = findViewById(R.id.progress);
         vProgress.setVisibility(View.GONE);
+        vTxtInProgress = findViewById(R.id.txt_in_progress);
+        vTxtInProgress.setVisibility(View.GONE);
 
         try {
             String templateJson = FileUtils.loadAsset(this, "receipt_template.json");
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onPrint(View v) {
-        resetPrintTracker();
+        //resetPrintTracker();
         SunmiBtPrinter printer = SunmiBtPrinter.getInstance(this);
         for (ITemplateItem tItem : receiptTemplate.getTemplateItems()) {
             startPrintSection();
@@ -87,31 +90,31 @@ public class MainActivity extends AppCompatActivity {
     private String errorText;
     private Throwable error;
 
-    private void resetPrintTracker() {
-        nSectionPrinting = 0;
-        errorText = null;
-        error = null;
-        vProgress.setVisibility(View.GONE);
-    }
 
     private void startPrintSection() {
         if (nSectionPrinting == 0) {
             vProgress.setVisibility(View.VISIBLE);
+            vTxtInProgress.setVisibility(View.VISIBLE);
             errorText = null;
             error = null;
         }
         nSectionPrinting ++;
+        vTxtInProgress.setText(getResources().getString(R.string.txt_in_progress, nSectionPrinting));
     }
 
     private void endPrintSection() {
         if (nSectionPrinting > 0) {
             nSectionPrinting --;
+            vTxtInProgress.setText(getResources().getString(R.string.txt_in_progress, nSectionPrinting));
             if (nSectionPrinting == 0) {
                 vProgress.setVisibility(View.GONE);
+                vTxtInProgress.setVisibility(View.GONE);
                 if (errorText == null) {
                     new AlertDialog.Builder(this).setMessage(R.string.print_ok_dialog_message).setPositiveButton(android.R.string.ok, (dialog, which) -> finish()).show();
                 } else {
                     showPrintError(getString(R.string.err_print_dialog_message, errorText), (error == null) ? null : String.format("(%s: %s)", error.getClass().getSimpleName(), error.getMessage()));
+                    errorText = null;
+                    error = null;
                 }
             }
         }

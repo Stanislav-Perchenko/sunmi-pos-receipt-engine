@@ -137,7 +137,7 @@ main_cycle: while (!released.get()) {
             }
 
             // Protection delay (ensure no printer input buffer overflow)
-            try { Thread.sleep(BuildConfig.DEBUG ? 1000 : 80); } catch (InterruptedException e) { }
+            try { Thread.sleep(BuildConfig.DEBUG ? 333 : 80); } catch (InterruptedException e) { }
 
         } // main thread cycle
     } //work()
