@@ -34,9 +34,38 @@ public final class SingleLineTextTemplateItem extends TextTemplateItem {
     @Override
     public Collection<byte[]> getPrinterRawData() {
         //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        List<byte[]> ret = new LinkedList<>();
+        List<byte[]> dataset = new LinkedList<>();
+
+
+        String run_str = isAllCaps() ? getTextValue().toUpperCase() : getTextValue();
+
+        /*if(isBold()) {
+            dataset.add()
+        } else {
+
+        }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         final int n = 4 + new Random().nextInt(6);
-        for (int i=0; i<n; i++) ret.add(new byte[0]);
-        return ret;
+        for (int i=0; i<n; i++) dataset.add(new byte[0]);
+        return dataset;
     }
 }

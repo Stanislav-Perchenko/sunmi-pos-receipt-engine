@@ -1,5 +1,6 @@
 {
   "print_mode": "text",
+  "charset": "CP437",
   "data": [
     {
       "type": "single_text",

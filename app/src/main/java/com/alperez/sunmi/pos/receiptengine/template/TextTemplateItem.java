@@ -9,11 +9,12 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+@SuppressWarnings("WeakerAccess")
 public abstract class TextTemplateItem extends BaseTemplateItem {
 
     private final String textValue;
-    private final boolean isAllCaps;
-    private final boolean isBold;
+    private final boolean allCaps;
+    private final boolean bold;
     private final TextAlign textAlign;
     private final int scaleWidth;
     private final int scaleHeight;
@@ -26,8 +27,8 @@ public abstract class TextTemplateItem extends BaseTemplateItem {
         super(jObj);
         json = jObj.toString();
         textValue = valueMapper.mapTextValue(jObj.getString("text"));
-        isAllCaps = jObj.optBoolean("all_caps", false);
-        isBold = jObj.optBoolean("bold", false);
+        allCaps = jObj.optBoolean("all_caps", false);
+        bold = jObj.optBoolean("bold", false);
         textAlign = TextAlign.fromJson(jObj.optString("text_align", TextAlign.ALIGN_LEFT.getJsonValue()));
         scaleWidth  = jObj.optInt("scale_w", 0);
         scaleHeight = jObj.optInt("scale_h", 0);
@@ -38,11 +39,11 @@ public abstract class TextTemplateItem extends BaseTemplateItem {
     }
 
     public boolean isAllCaps() {
-        return isAllCaps;
+        return allCaps;
     }
 
     public boolean isBold() {
-        return isBold;
+        return bold;
     }
 
     public TextAlign getTextAlign() {
@@ -67,8 +68,8 @@ public abstract class TextTemplateItem extends BaseTemplateItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TextTemplateItem that = (TextTemplateItem) o;
-        return isAllCaps == that.isAllCaps &&
-                isBold == that.isBold &&
+        return allCaps == that.allCaps &&
+                bold == that.bold &&
                 scaleWidth == that.scaleWidth &&
                 scaleHeight == that.scaleHeight &&
                 textValue.equals(that.textValue) &&
@@ -78,6 +79,6 @@ public abstract class TextTemplateItem extends BaseTemplateItem {
 
     @Override
     public final int hashCode() {
-        return Objects.hash(textValue, isAllCaps, isBold, textAlign, scaleWidth, scaleHeight, isMultiLine());
+        return Objects.hash(textValue, allCaps, bold, textAlign, scaleWidth, scaleHeight, isMultiLine());
     }
 }

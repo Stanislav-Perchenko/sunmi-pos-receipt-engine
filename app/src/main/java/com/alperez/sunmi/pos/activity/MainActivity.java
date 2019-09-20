@@ -66,25 +66,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onPrint(View v) {
-        //resetPrintTracker();
         SunmiBtPrinter printer = SunmiBtPrinter.getInstance(this);
+        printer.print(receiptTemplate.getPrinterSetupCode(), printCallback);
         for (ITemplateItem tItem : receiptTemplate.getTemplateItems()) {
             startPrintSection();
-            printer.print(tItem.getPrinterRawData(), new PrintResultCallback() {
-                @Override
-                public void onComplete() {
-                    endPrintSection();
-                }
-
-                @Override
-                public void onError(@NonNull String reason, @Nullable Throwable t) {
-                    errorText = reason;
-                    error = t;
-                    endPrintSection();
-                }
-            });
+            printer.print(tItem.getPrinterRawData(), printCallback);
         }
     }
+
+
+    private final PrintResultCallback printCallback = new PrintResultCallback() {
+        @Override
+        public void onComplete() {
+            endPrintSection();
+        }
+
+        @Override
+        public void onError(@NonNull String reason, @Nullable Throwable t) {
+            errorText = reason;
+            error = t;
+            endPrintSection();
+        }
+    };
 
     private int nSectionPrinting;
     private String errorText;
