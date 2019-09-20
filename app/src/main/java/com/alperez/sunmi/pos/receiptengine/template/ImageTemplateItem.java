@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 public final class ImageTemplateItem extends BaseTemplateItem {
     private final byte[] imageData;
@@ -54,6 +56,9 @@ public final class ImageTemplateItem extends BaseTemplateItem {
     @Override
     public Collection<byte[]> getPrinterRawData() {
         //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        return new LinkedList<>();
+        List<byte[]> ret = new LinkedList<>();
+        final int n = 4 + new Random().nextInt(6);
+        for (int i=0; i<n; i++) ret.add(new byte[0]);
+        return ret;
     }
 }

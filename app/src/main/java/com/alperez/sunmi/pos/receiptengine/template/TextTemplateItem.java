@@ -22,7 +22,7 @@ public abstract class TextTemplateItem extends BaseTemplateItem {
 
     public abstract boolean isMultiLine();
 
-    public TextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
+    TextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
         super(jObj);
         json = jObj.toString();
         textValue = valueMapper.mapTextValue(jObj.getString("text"));

@@ -9,10 +9,12 @@ import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 public final class MultiLineTextTemplateItem extends TextTemplateItem {
 
-    public MultiLineTextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
+    MultiLineTextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
         super(jObj, valueMapper);
     }
 
@@ -33,6 +35,9 @@ public final class MultiLineTextTemplateItem extends TextTemplateItem {
     @Override
     public Collection<byte[]> getPrinterRawData() {
         //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        return new LinkedList<>();
+        List<byte[]> ret = new LinkedList<>();
+        final int n = 4 + new Random().nextInt(6);
+        for (int i=0; i<n; i++) ret.add(new byte[0]);
+        return ret;
     }
 }
