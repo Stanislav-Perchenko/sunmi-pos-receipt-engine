@@ -3,7 +3,7 @@ package com.alperez.sunmi.pos.receiptengine.template;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class BaseTemplateItem implements ITemplateItem {
+abstract class BaseTemplateItem implements ITemplateItem {
 
     BaseTemplateItem(JSONObject jObj) throws JSONException {
         if (!jObj.getString("type").equals(getTypeJsonValue())) {

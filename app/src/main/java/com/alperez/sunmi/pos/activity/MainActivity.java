@@ -13,9 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.alperez.sunmi.pos.R;
 import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
+import com.alperez.sunmi.pos.receiptengine.print.PosPrinter;
 import com.alperez.sunmi.pos.receiptengine.print.PrintResultCallback;
-import com.alperez.sunmi.pos.receiptengine.print.SunmiBtPrinter;
-import com.alperez.sunmi.pos.receiptengine.template.ITemplateItem;
 import com.alperez.sunmi.pos.receiptengine.template.ReceiptTemplate;
 import com.alperez.sunmi.pos.utils.FileUtils;
 
@@ -23,6 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView vTxtInProgress;
     private View vProgress;
+
+    private PosPrinter printer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,21 +59,20 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        printer = PosPrinter.getSunmiInternalBTPrinter(this);
         findViewById(R.id.action_print).setOnClickListener(this::onPrint);
     }
 
     @Override
     protected void onDestroy() {
-        SunmiBtPrinter.getInstance(this).shutdown();
+        printer.shutdown();
         super.onDestroy();
     }
 
     private void onPrint(View v) {
-        SunmiBtPrinter printer = SunmiBtPrinter.getInstance(this);
-        printer.print(receiptTemplate.getPrinterSetupCode(), printCallback);
-        for (ITemplateItem tItem : receiptTemplate.getTemplateItems()) {
+        for (Iterator<Collection<byte[]>> itr = receiptTemplate.getRawPrintDataIterator(printer.getPrinterParams()); itr.hasNext(); ) {
             startPrintSection();
-            printer.print(tItem.getPrinterRawData(), printCallback);
+            printer.print(itr.next(), printCallback);
         }
     }
 

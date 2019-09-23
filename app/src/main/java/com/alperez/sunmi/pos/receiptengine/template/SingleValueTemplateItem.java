@@ -2,18 +2,21 @@ package com.alperez.sunmi.pos.receiptengine.template;
 
 import androidx.annotation.NonNull;
 
+import com.alperez.sunmi.pos.receiptengine.escpos.Charset;
 import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
+import com.alperez.sunmi.pos.receiptengine.print.PosPrinterParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public final class SingleValueTemplateItem extends BaseTemplateItem {
+final class SingleValueTemplateItem extends BaseTemplateItem {
 
     private final String textName;
     private final boolean isNameBold;
@@ -111,7 +114,7 @@ public final class SingleValueTemplateItem extends BaseTemplateItem {
 
     /************************  Build ESC/POS printer raw data  ************************************/
     @Override
-    public Collection<byte[]> getPrinterRawData() {
+    public Collection<byte[]> getPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
         //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         List<byte[]> ret = new LinkedList<>();
         final int n = 4 + new Random().nextInt(6);

@@ -2,18 +2,23 @@ package com.alperez.sunmi.pos.receiptengine.template;
 
 import androidx.annotation.Nullable;
 
+import com.alperez.sunmi.pos.receiptengine.escpos.Charset;
 import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
+import com.alperez.sunmi.pos.receiptengine.print.PosPrinterParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
 public interface ITemplateItem {
 
     String getTypeJsonValue();
 
-    Collection<byte[]> getPrinterRawData();
+    String getJson();
+
+    Collection<byte[]> getPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException;
 
     @Nullable
     static ITemplateItem optFromJson(JSONObject jObj, ParameterValueMapper valueMapper) throws JSONException {

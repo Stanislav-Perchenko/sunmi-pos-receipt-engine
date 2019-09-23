@@ -1,6 +1,7 @@
 {
   "print_mode": "text",
   "charset": "CP437",
+  "force_unidir_print": false,
   "data": [
     {
       "type": "single_text",

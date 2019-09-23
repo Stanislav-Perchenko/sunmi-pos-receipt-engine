@@ -6,16 +6,22 @@ import org.json.JSONException;
 
 public enum  TextAlign {
 
-    ALIGN_LEFT("left"), ALIGN_CENTER("center"), ALIGN_RIGHT("right");
+    ALIGN_LEFT("left", (byte) 48), ALIGN_CENTER("center", (byte) 49), ALIGN_RIGHT("right", (byte) 50);
 
     private final String jsonValue;
+    private final byte escPosValue;
 
-    TextAlign(String jsonValue) {
+    TextAlign(String jsonValue, byte escPosValue) {
         this.jsonValue = jsonValue;
+        this.escPosValue = escPosValue;
     }
 
     public String getJsonValue() {
         return jsonValue;
+    }
+
+    public byte getEscPosValue() {
+        return escPosValue;
     }
 
     public static TextAlign fromJson(String jsonValue) throws JSONException {

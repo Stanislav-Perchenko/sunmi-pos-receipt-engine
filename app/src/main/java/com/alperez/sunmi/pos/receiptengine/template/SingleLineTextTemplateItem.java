@@ -2,17 +2,18 @@ package com.alperez.sunmi.pos.receiptengine.template;
 
 import androidx.annotation.NonNull;
 
+import com.alperez.sunmi.pos.receiptengine.escpos.Charset;
+import com.alperez.sunmi.pos.receiptengine.escpos.ESCUtils;
 import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
+import com.alperez.sunmi.pos.receiptengine.print.PosPrinterParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
 
-public final class SingleLineTextTemplateItem extends TextTemplateItem {
+final class SingleLineTextTemplateItem extends TextTemplateItem {
 
     SingleLineTextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
         super(jObj, valueMapper);
@@ -32,40 +33,22 @@ public final class SingleLineTextTemplateItem extends TextTemplateItem {
 
     /************************  Build ESC/POS printer raw data  ************************************/
     @Override
-    public Collection<byte[]> getPrinterRawData() {
-        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        List<byte[]> dataset = new LinkedList<>();
-
+    public Collection<byte[]> getPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
+        Collection<byte[]> dataset = super.getPrinterRawData(charset, printerParams);
 
         String run_str = isAllCaps() ? getTextValue().toUpperCase() : getTextValue();
 
-        /*if(isBold()) {
-            dataset.add()
-        } else {
+        int sc_w = getScaleWidth();
+        if (sc_w < printerParams.characterScaleWidthLimits()[0]) sc_w = printerParams.characterScaleWidthLimits()[0];
+        else if (sc_w > printerParams.characterScaleWidthLimits()[1]) sc_w = printerParams.characterScaleWidthLimits()[1];
+        int maxLen = printerParams.lineLengthFromScaleWidth(sc_w);
+        if(run_str.length() > maxLen) {
+            run_str = run_str.substring(0, maxLen);
+        }
 
-        }*/
+        dataset.add(run_str.getBytes(charset.getEncodingStdName()));
+        dataset.add(ESCUtils.nextLine(1));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        final int n = 4 + new Random().nextInt(6);
-        for (int i=0; i<n; i++) dataset.add(new byte[0]);
         return dataset;
     }
 }

@@ -24,7 +24,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings({"CatchMayIgnoreException", "StaticFieldLeak"})
-public final class SunmiBtPrinter {
+final class SunmiBtPrinter implements PosPrinter {
 
     private static final String INNER_PRINTER_ADDRESS = "00:11:22:33:44:55";
     private static final UUID PRINTER_SERVICE_CHANNEL_ID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -55,11 +55,37 @@ public final class SunmiBtPrinter {
     }
 
 
-    /**
-     * This method puts a new print job into queue and start worker thread if necessary
-     * @param data - raw data to be sent to the printer
-     * @param callback - use this for print result notifications
-     */
+    @Override
+    public PosPrinterParams getPrinterParams() {
+        return new PosPrinterParams() {
+            @Override
+            public int[] characterScaleWidthLimits() {
+                return new int[]{1, 4};
+            }
+
+            @Override
+            public int[] characterScaleHeightLimits() {
+                return new int[]{1, 5};
+            }
+
+            @Override
+            public int lineLengthFromScaleWidth(int scaleWidth) {
+                switch (scaleWidth) {
+                    case 1:
+                        return 32;
+                    case 2:
+                        return 16;
+                    case 3:
+                        return 10;
+                    case 4:
+                        return 8;
+                    default:
+                        throw new IllegalArgumentException("Width scale is not supported - "+scaleWidth+". Allowed [1, 4]");
+                }
+            }
+        };
+    }
+
     public void print(Collection<byte[]> data, PrintResultCallback callback) {
         tasks.addLast(new PrintTask(data, callback));
         synchronized (trigger) {
