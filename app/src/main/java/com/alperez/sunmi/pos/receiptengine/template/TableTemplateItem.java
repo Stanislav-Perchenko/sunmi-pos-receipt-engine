@@ -144,9 +144,9 @@ final class TableTemplateItem extends BaseTemplateItem {
     public Collection<byte[]> getPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
         //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         List<byte[]> ret = new LinkedList<>();
-        ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
+        if (printerParams.isUnidirectionPrintSupported()) ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
 
-
+        if (printerParams.isUnidirectionPrintSupported()) ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(false));
         return ret;
     }
 }

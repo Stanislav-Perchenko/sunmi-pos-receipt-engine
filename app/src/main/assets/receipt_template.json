@@ -72,7 +72,7 @@
       "name": "Shop Name: ",
       "name_is_bold": false,
       "value": "{shop.name: text}",
-      "value_is_bold": false,
+      "value_is_bold": true,
       "value_align": "left"
     },
     {
@@ -82,7 +82,7 @@
       "name": "Shop Code: ",
       "name_is_bold": false,
       "value": "{shop.code: text}",
-      "value_is_bold": false,
+      "value_is_bold": true,
       "value_align": "left"
     },
     {
@@ -97,15 +97,33 @@
     },
     {
       "type": "single_text",
-      "text": "\nDate: {now_timestamp: timestamp(%1$td/%1$tm/%1$tY %1$tR)}\n",
+      "text": "",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_text",
+      "text": "Date: {now_timestamp: timestamp(%1$td/%1$tm/%1$tY %1$tR)}",
       "text_align": "right",
       "scale_w": 1,
       "scale_h": 1
     },
     {
       "type": "single_text",
-      "text": "\nPayment Method: {payment_method: text}\n",
+      "text": "",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_text",
+      "text": "Payment Method: {payment_method: text}",
       "text_align": "right",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_text",
+      "text": "",
       "scale_w": 1,
       "scale_h": 1
     },
@@ -116,7 +134,7 @@
       "name": "Customer: ",
       "name_is_bold": false,
       "value": "{customer.name: text}",
-      "value_is_bold": false,
+      "value_is_bold": true,
       "value_align": "left"
     },
     {
@@ -142,7 +160,7 @@
     },
     {
       "type": "single_text",
-      "text": "EWC codes\n",
+      "text": "EWC codes",
       "all_caps": true,
       "text_align": "left",
       "scale_w": 1,
@@ -190,7 +208,7 @@
     },
     {
       "type": "multiline_text",
-      "text": "This receipt will enable you to claim recycling credits where applicable\n",
+      "text": "\nThis receipt will enable you to claim recycling credits where applicable\n",
       "text_align": "left",
       "scale_w": 1,
       "scale_h": 1

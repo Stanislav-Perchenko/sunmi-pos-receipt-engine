@@ -18,7 +18,7 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 abstract class TextTemplateItem extends BaseTemplateItem {
 
-    private final String textValue;
+
     private final boolean allCaps;
     private final boolean bold;
     private final TextAlign textAlign;
@@ -32,16 +32,11 @@ abstract class TextTemplateItem extends BaseTemplateItem {
     TextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
         super(jObj);
         json = jObj.toString();
-        textValue = valueMapper.mapTextValue(jObj.getString("text"));
         allCaps = jObj.optBoolean("all_caps", false);
         bold = jObj.optBoolean("bold", false);
         textAlign = TextAlign.fromJson(jObj.optString("text_align", TextAlign.ALIGN_LEFT.getJsonValue()));
         scaleWidth  = jObj.optInt("scale_w", 0);
         scaleHeight = jObj.optInt("scale_h", 0);
-    }
-
-    public String getTextValue() {
-        return textValue;
     }
 
     public boolean isAllCaps() {
@@ -70,7 +65,7 @@ abstract class TextTemplateItem extends BaseTemplateItem {
 
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TextTemplateItem that = (TextTemplateItem) o;
@@ -78,14 +73,13 @@ abstract class TextTemplateItem extends BaseTemplateItem {
                 bold == that.bold &&
                 scaleWidth == that.scaleWidth &&
                 scaleHeight == that.scaleHeight &&
-                textValue.equals(that.textValue) &&
                 textAlign == that.textAlign &&
                 isMultiLine() == that.isMultiLine();
     }
 
     @Override
-    public final int hashCode() {
-        return Objects.hash(textValue, allCaps, bold, textAlign, scaleWidth, scaleHeight, isMultiLine());
+    public int hashCode() {
+        return Objects.hash(allCaps, bold, textAlign, scaleWidth, scaleHeight, isMultiLine());
     }
 
 

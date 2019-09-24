@@ -1,0 +1,74 @@
+{
+  "print_mode": "text",
+  "charset": "CP437",
+  "force_unidir_print": false,
+  "data": [
+
+
+
+    {
+      "type": "single_value_item",
+      "scale_w": 1,
+      "scale_h": 1,
+      "name": "\nCust\nomer: ",
+      "name_is_bold": true,
+      "value": "\nkjl\nkjlk\n",
+      "value_is_bold": false,
+      "value_align": "left"
+    },
+    {
+      "type": "single_text",
+      "text": "\n\n",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 1,
+      "scale_h": 1,
+      "name": "\nCust\nomer: ",
+      "name_is_bold": false,
+      "value": "\nkjl\nkjlk\n",
+      "value_is_bold": true,
+      "value_align": "right"
+    },
+    {
+      "type": "single_text",
+      "text": "\n\n",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 1,
+      "scale_h": 1,
+      "name": "Customer: ",
+      "name_is_bold": false,
+      "value": "Aaaaaa Bbbbb Cccc Ddddddddddddddd. Fffffffffff",
+      "value_is_bold": true,
+      "value_align": "right"
+    },
+    {
+      "type": "single_text",
+      "text": "\n\n",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_value_item",
+      "scale_w": 1,
+      "scale_h": 1,
+      "name": "Customer: ",
+      "name_is_bold": true,
+      "value": "Aaaaaa Bbbbb Cccc Ddddddddddddddd. Fffffffffff",
+      "value_is_bold": true,
+      "value_align": "left"
+    },
+    {
+      "type": "single_text",
+      "text": "\n\n",
+      "scale_w": 1,
+      "scale_h": 1
+    }
+  ]
+}

@@ -60,9 +60,12 @@ final class ImageTemplateItem extends BaseTemplateItem {
     public Collection<byte[]> getPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
         //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         List<byte[]> ret = new LinkedList<>();
-        ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
+        if (printerParams.isUnidirectionPrintSupported()) ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
 
+        ret.add(ESCUtils.setTextAlignment(TextAlign.ALIGN_CENTER));
+        ret.add("\n{image}\n\n".getBytes(charset.getEncodingStdName()));
 
+        if (printerParams.isUnidirectionPrintSupported()) ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(false));
         return ret;
     }
 }

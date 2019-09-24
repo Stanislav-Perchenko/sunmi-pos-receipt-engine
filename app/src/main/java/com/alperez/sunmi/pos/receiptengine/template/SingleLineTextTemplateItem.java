@@ -12,11 +12,19 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.Objects;
 
 final class SingleLineTextTemplateItem extends TextTemplateItem {
 
+    private final String textValue;
+
     SingleLineTextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
         super(jObj, valueMapper);
+        textValue = TextUtils.removeAllChars(valueMapper.mapTextValue(jObj.getString("text")), '\n');
+    }
+
+    public String getTextValue() {
+        return textValue;
     }
 
     @Override
@@ -29,6 +37,20 @@ final class SingleLineTextTemplateItem extends TextTemplateItem {
     @Override
     public String getTypeJsonValue() {
         return TYPE_JSON_VALUE;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SingleLineTextTemplateItem that = (SingleLineTextTemplateItem) o;
+        return textValue.equals(that.textValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), textValue);
     }
 
     /************************  Build ESC/POS printer raw data  ************************************/

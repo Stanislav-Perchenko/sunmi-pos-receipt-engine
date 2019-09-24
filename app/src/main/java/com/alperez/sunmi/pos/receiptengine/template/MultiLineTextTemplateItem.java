@@ -14,11 +14,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.Objects;
 
 final class MultiLineTextTemplateItem extends TextTemplateItem {
 
+    private final String textValue;
+
     MultiLineTextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
         super(jObj, valueMapper);
+        textValue = valueMapper.mapTextValue(jObj.getString("text"));
+    }
+
+    public String getTextValue() {
+        return textValue;
     }
 
     @Override
@@ -33,19 +41,34 @@ final class MultiLineTextTemplateItem extends TextTemplateItem {
         return TYPE_JSON_VALUE;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MultiLineTextTemplateItem that = (MultiLineTextTemplateItem) o;
+        return textValue.equals(that.textValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), textValue);
+    }
 
     /************************  Build ESC/POS printer raw data  ************************************/
     @Override
     public Collection<byte[]> getPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
-        Collection<byte[]> dataset = super.getPrinterRawData(charset, printerParams);
-
-        String run_str = isAllCaps() ? getTextValue().toUpperCase().trim() : getTextValue().trim();
 
         int sc_w = getScaleWidth();
         if (sc_w < printerParams.characterScaleWidthLimits()[0]) sc_w = printerParams.characterScaleWidthLimits()[0];
         else if (sc_w > printerParams.characterScaleWidthLimits()[1]) sc_w = printerParams.characterScaleWidthLimits()[1];
         int maxLen = printerParams.lineLengthFromScaleWidth(sc_w);
 
+
+        final String run_str = TextUtils.reduceWitespacesBeforeLayout(isAllCaps() ? getTextValue().toUpperCase() : getTextValue(), maxLen);
+
+
+        Collection<byte[]> dataset = super.getPrinterRawData(charset, printerParams);
         if (run_str.length() > maxLen) {
             String[] lines = TextUtils.splitTextByLines(run_str, maxLen);
             ByteArrayOutputStream bos = new ByteArrayOutputStream(run_str.length()*2+10);

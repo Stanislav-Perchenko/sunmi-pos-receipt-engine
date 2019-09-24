@@ -86,22 +86,22 @@ public final class ReceiptTemplate {
 
     private Collection<byte[]> getTemplateItemPrintData(int index, PosPrinterParams printerParams) throws UnsupportedEncodingException {
         Collection<byte[]> origData = templateItems.get(index).getPrinterRawData(charset, printerParams);
-        if (!forceUnidirectionalPrintMode) {
-            return origData;
-        }
-
-        try {
-            if (origData instanceof List) {
-                ((List<byte[]>) origData).add(0, ESCUtils.setUnidirectionalPrintModeEnabled(true));
-                return origData;
-            } else {
-                throw new UnsupportedOperationException();
+        if (printerParams.isUnidirectionPrintSupported() && forceUnidirectionalPrintMode) {
+            try {
+                if (origData instanceof List) {
+                    ((List<byte[]>) origData).add(0, ESCUtils.setUnidirectionalPrintModeEnabled(true));
+                    return origData;
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            } catch (UnsupportedOperationException e) {
+                List<byte[]> finData = new ArrayList<>(1 + origData.size());
+                finData.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
+                finData.addAll(origData);
+                return finData;
             }
-        } catch (UnsupportedOperationException e) {
-            List<byte[]> finData = new ArrayList<>(1+origData.size());
-            finData.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
-            finData.addAll(origData);
-            return finData;
+        } else {
+            return origData;
         }
     }
 

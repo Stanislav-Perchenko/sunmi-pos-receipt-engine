@@ -58,6 +58,10 @@ final class SunmiBtPrinter implements PosPrinter {
     @Override
     public PosPrinterParams getPrinterParams() {
         return new PosPrinterParams() {
+            public boolean isUnidirectionPrintSupported() {
+                return false;
+            }
+
             @Override
             public int[] characterScaleWidthLimits() {
                 return new int[]{1, 4};
@@ -210,16 +214,20 @@ main_cycle: while (!released.get()) {
     /***********************  This is Android-specific code  **************************************/
     /**********************************************************************************************/
 
-    private void notifySuccess(PrintResultCallback cb) {
-        mUiHandler.obtainMessage(MSG_OK, cb).sendToTarget();
+    private void notifySuccess(@Nullable PrintResultCallback cb) {
+        if (cb != null) {
+            mUiHandler.obtainMessage(MSG_OK, cb).sendToTarget();
+        }
     }
 
-    private void notifyError(PrintResultCallback cb, String reason, Exception ex) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("cb", cb);
-        map.put("reason", reason);
-        map.put("ex", ex);
-        mUiHandler.obtainMessage(MSG_ERR, map).sendToTarget();
+    private void notifyError(@Nullable PrintResultCallback cb, String reason, Exception ex) {
+        if (cb != null) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("cb", cb);
+            map.put("reason", reason);
+            map.put("ex", ex);
+            mUiHandler.obtainMessage(MSG_ERR, map).sendToTarget();
+        }
     }
 
     private static final int MSG_OK  = 0;

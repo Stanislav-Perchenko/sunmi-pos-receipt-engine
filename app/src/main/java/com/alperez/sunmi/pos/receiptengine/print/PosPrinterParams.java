@@ -1,6 +1,7 @@
 package com.alperez.sunmi.pos.receiptengine.print;
 
 public interface PosPrinterParams {
+    boolean isUnidirectionPrintSupported();
 
     /**
      * An array of size 2 defines width scale limits

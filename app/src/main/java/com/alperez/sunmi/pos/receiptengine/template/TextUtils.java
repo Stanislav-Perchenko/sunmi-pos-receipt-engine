@@ -1,5 +1,9 @@
 package com.alperez.sunmi.pos.receiptengine.template;
 
+import com.alperez.sunmi.pos.receiptengine.escpos.Charset;
+
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -139,6 +143,24 @@ next_line:
             if (ch == c) return true;
         }
         return false;
+    }
+
+    static void writeNCharacters(OutputStream os, char ch, Charset charset, int num) throws IOException {
+        StringBuilder sb = new StringBuilder(num);
+        for (int i=0; i<num; i++) {
+            sb.append(ch);
+        }
+        os.write(sb.toString().getBytes(charset.getEncodingStdName()));
+    }
+
+    static String removeAllChars(CharSequence text, char toRemove) {
+        StringBuilder sb = new StringBuilder(text.length());
+        final int len = text.length();
+        for (int i=0; i<len; i++) {
+            char ch = text.charAt(i);
+            if (ch != toRemove) sb.append(ch);
+        }
+        return sb.toString();
     }
 
     private TextUtils() { }

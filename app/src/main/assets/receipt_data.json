@@ -13,8 +13,8 @@
     "vat_reg_number": 777893451
   },
   "shop": {
-    "code": "<shopcode>",
-    "name": "<shopname>"
+    "code": "1857",
+    "name": "<A very long name of a cool shop!>"
   },
   "receipt_number": 10,
   "now_timestamp": 1568896074478,

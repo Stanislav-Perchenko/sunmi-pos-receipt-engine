@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         vTxtInProgress.setVisibility(View.GONE);
 
         try {
-            String templateJson = FileUtils.loadAsset(this, "receipt_template.json");
+            String templateJson = FileUtils.loadAsset(this, /*"template_test_value.json"*/"receipt_template.json");
             JSONObject jTemplate = new JSONObject(templateJson);
 
             String dataJson = FileUtils.loadAsset(this, "receipt_data.json");
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         printer = PosPrinter.getSunmiInternalBTPrinter(this);
         findViewById(R.id.action_print).setOnClickListener(this::onPrint);
+
     }
 
     @Override
