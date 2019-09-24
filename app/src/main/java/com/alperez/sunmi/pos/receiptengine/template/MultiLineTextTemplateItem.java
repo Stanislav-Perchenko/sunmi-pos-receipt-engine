@@ -47,7 +47,8 @@ final class MultiLineTextTemplateItem extends TextTemplateItem {
         int maxLen = printerParams.lineLengthFromScaleWidth(sc_w);
 
         if (run_str.length() > maxLen) {
-            String[] lines = TextUtils.splitTextByLines(run_str, maxLen);
+            //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!
+            String[] lines = null;//TextUtils.splitTextByLines(run_str, maxLen);
             ByteArrayOutputStream bos = new ByteArrayOutputStream(run_str.length()*2+10);
             for (String line : lines) {
                 try {

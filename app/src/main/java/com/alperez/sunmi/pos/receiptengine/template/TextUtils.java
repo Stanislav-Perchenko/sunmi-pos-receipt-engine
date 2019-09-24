@@ -1,8 +1,6 @@
 package com.alperez.sunmi.pos.receiptengine.template;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 final class TextUtils {
 
@@ -51,7 +49,16 @@ final class TextUtils {
         return result.toString();
     }
 
-    public static String[] splitTextByLines(String text, int maxLineLen) {
+    
+
+    static boolean isSecondaryDelimiter(char ch) {
+        for (char c : SECONDARY_DELIMITERS) {
+            if (ch == c) return true;
+        }
+        return false;
+    }
+
+    /*public static String[] splitTextByLinesOld(String text, int maxLineLen) {
         text = text.trim();
         final List<String> lines = new LinkedList<>();
         while (text.length() > 0) {
@@ -90,11 +97,12 @@ final class TextUtils {
 
         }
         return lines.toArray(new String[lines.size()]);
-    }
+    }*/
+
 
 
     private static final char[] SECONDARY_DELIMITERS = {'.', ',', ';', ':', '!', '?', '*', '/', '-', '+', '=' };
-    private static int lastIndexOfSecondaryDelimiter(CharSequence text) {
+    static int lastIndexOfSecondaryDelimiter(CharSequence text) {
         final int len = text.length();
         for (int i=len-1; i>=0; i--) {
             char ch = text.charAt(i);
