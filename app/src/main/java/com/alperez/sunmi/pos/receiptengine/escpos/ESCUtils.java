@@ -124,6 +124,12 @@ public final class ESCUtils {
         return result;
     }
 
+    /**
+     * Scales start with 1 !!!
+     * @param scaleWidth width scale in range [1..8]
+     * @param scaleHeight height scale in range [1..8]
+     * @return
+     */
     public static byte[] setCharacterScale(int scaleWidth, int scaleHeight) {
         int combinedScale = ((ensureCharScaleValue(scaleWidth) << 4) & 0xF0) | (ensureCharScaleValue(scaleHeight) & 0x0F);
         byte[] result = new byte[3];
@@ -136,7 +142,7 @@ public final class ESCUtils {
     private static int ensureCharScaleValue(int sc) {
         if (sc < 1) return 1;
         else if (sc > 8) return 8;
-        else return sc;
+        else return sc-1;
     }
 
     /**

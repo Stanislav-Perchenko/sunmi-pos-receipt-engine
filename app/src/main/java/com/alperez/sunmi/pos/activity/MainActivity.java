@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alperez.sunmi.pos.R;
+import com.alperez.sunmi.pos.receiptengine.escpos.ESCUtils;
 import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
 import com.alperez.sunmi.pos.receiptengine.print.PosPrinter;
 import com.alperez.sunmi.pos.receiptengine.print.PrintResultCallback;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             startPrintSection();
             printer.print(itr.next(), printCallback);
         }
+        printer.print(Arrays.asList(ESCUtils.nextLine(3)), null);
     }
 
 
