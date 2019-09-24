@@ -68,25 +68,146 @@ public final class PrintLayoutValidationTests {
         }
     }
 
-    /**
-     * Aaaaaa bbbbbbbb ccccc dddddddd eeeee fffffffffffffff   ggggggggggggg   hhhhhhhh ttttt hh.Aaaaaaaaaaaaaaaaaa bbbb.
-     * ------------------------
-     * Aaaaaa bbbbbbbb ccccc
-     * dddddddd eeeee
-     * fffffffffffffff
-     * ggggggggggggg   hhhhhhhh
-     * ttttt hh.
-     * Aaaaaaaaaaaaaaaaaa bbbb.
-     */
-    /*@Test
-    public void validateTextMultilineLayout_var1() {
-        String[] sss = TextUtils.splitTextByLines("Aaaaaa bbbbbbbb ccccc dddddddd eeeee fffffffffffffff   ggggggggggggg   hhhhhhhh ttttt hh.Aaaaaaaaaaaaaaaaaa bbbb.", 24);
-        assertThat(sss.length).isEqualTo(6);
-        assertThat(sss[0]).isEqualTo("Aaaaaa bbbbbbbb ccccc");
-        assertThat(sss[1]).isEqualTo("dddddddd eeeee");
-        assertThat(sss[2]).isEqualTo("fffffffffffffff  ");
-        assertThat(sss[3]).isEqualTo("ggggggggggggg   hhhhhhhh");
-        assertThat(sss[4]).isEqualTo("ttttt hh.");
-        assertThat(sss[5]).isEqualTo("Aaaaaaaaaaaaaaaaaa bbbb.");
-    }*/
+
+    @Test(timeout = 500)
+    public void validate_splitTextByLines_with_newlines() {
+        String[] sss = TextUtils.splitTextByLines("\n", 24);
+        assertThat(sss.length).isEqualTo(1);
+        for (String s : sss) assertThat(s).isEqualTo("");
+
+        sss = TextUtils.splitTextByLines("\n\n", 24);
+        assertThat(sss.length).isEqualTo(2);
+        for (String s : sss) assertThat(s).isEqualTo("");
+
+        sss = TextUtils.splitTextByLines("\n\n\n\n\n", 24);
+        assertThat(sss.length).isEqualTo(5);
+        for (String s : sss) assertThat(s).isEqualTo("");
+
+        sss = TextUtils.splitTextByLines("\n#%^&?\n", 24);
+        assertThat(sss.length).isEqualTo(3);
+        assertThat(sss[0]).isEqualTo("");
+        assertThat(sss[1]).isEqualTo("#%^&?");
+        assertThat(sss[2]).isEqualTo("");
+
+        sss = TextUtils.splitTextByLines("\n\n\nAs-ssss.\n\n    - Bbbbb;\n\n", 24);
+        assertThat(sss.length).isEqualTo(7);
+        assertThat(sss[0]).isEqualTo("");
+        assertThat(sss[1]).isEqualTo("");
+        assertThat(sss[2]).isEqualTo("");
+        assertThat(sss[3]).isEqualTo("As-ssss.");
+        assertThat(sss[4]).isEqualTo("");
+        assertThat(sss[5]).isEqualTo("    - Bbbbb;");
+        assertThat(sss[6]).isEqualTo("");
+
+        sss = TextUtils.splitTextByLines("   - Aaaaaaaaaaa;\n   - Bbbbbbbbbbbbbb;\n   - Ccccccccccccccccccccccccc;\n   - Ddddddddddd-eeeeeeeeeeeeeeee.\n", 24);
+        assertThat(sss.length).isEqualTo(8);
+        assertThat(sss[0]).isEqualTo("   - Aaaaaaaaaaa;");
+        assertThat(sss[1]).isEqualTo("   - Bbbbbbbbbbbbbb;");
+        assertThat(sss[2]).isEqualTo("   -");
+        assertThat(sss[3]).isEqualTo("Cccccccccccccccccccccccc");
+        assertThat(sss[4]).isEqualTo("c;");
+        assertThat(sss[5]).isEqualTo("   - Ddddddddddd-");
+        assertThat(sss[6]).isEqualTo("eeeeeeeeeeeeeeee.");
+        assertThat(sss[7]).isEqualTo("");
+    }
+
+    @Test(timeout = 500)
+    public void validate_splitTextByLines_no_newlines_2() {
+        String[] sss = TextUtils.splitTextByLines("Aaaa. Bbbbbbbbbbbbbbbbb: ccccccccccc.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("Aaaa. Bbbbbbbbbbbbbbbbb:");
+        assertThat(sss[1]).isEqualTo("ccccccccccc.");
+
+        sss = TextUtils.splitTextByLines("Aaaa. Bbbbbbbbbbbbbbbbbb: ccccccccccc.", 24);
+        assertThat(sss.length).isEqualTo(3);
+        assertThat(sss[0]).isEqualTo("Aaaa.");
+        assertThat(sss[1]).isEqualTo("Bbbbbbbbbbbbbbbbbb:");
+        assertThat(sss[2]).isEqualTo("ccccccccccc.");
+
+        sss = TextUtils.splitTextByLines("Aaaa. Bbbbbbbbb-bbbbbbbb:   ccccccccccccccccccccccc.", 24);
+        assertThat(sss.length).isEqualTo(3);
+        assertThat(sss[0]).isEqualTo("Aaaa. Bbbbbbbbb-");
+        assertThat(sss[1]).isEqualTo("bbbbbbbb:  ");
+        assertThat(sss[2]).isEqualTo("ccccccccccccccccccccccc.");
+
+    }
+
+
+    @Test(timeout = 500)
+    public void validate_splitTextByLines_no_newlines() {
+
+        String[] sss = TextUtils.splitTextByLines("1aa bbb ccc.", 24);
+        assertThat(sss.length).isEqualTo(1);
+        assertThat(sss[0]).isEqualTo("1aa bbb ccc.");
+
+        sss = TextUtils.splitTextByLines("2", 24);
+        assertThat(sss.length).isEqualTo(1);
+        assertThat(sss[0]).isEqualTo("2");
+
+        sss = TextUtils.splitTextByLines("   - 3", 24);
+        assertThat(sss.length).isEqualTo(1);
+        assertThat(sss[0]).isEqualTo("   - 3");
+
+        sss = TextUtils.splitTextByLines("   - 4aaaadddfffredcfred", 24);
+        assertThat(sss.length).isEqualTo(1);
+        assertThat(sss[0]).isEqualTo("   - 4aaaadddfffredcfred");
+
+        sss = TextUtils.splitTextByLines("   - 5aaaadddfffredc.fred eee.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("   - 5aaaadddfffredc.");
+        assertThat(sss[1]).isEqualTo("fred eee.");
+
+        sss = TextUtils.splitTextByLines("   - 6aaaadddfffredc.fr.Eddd eee.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("   - 6aaaadddfffredc.fr.");
+        assertThat(sss[1]).isEqualTo("Eddd eee.");
+
+        sss = TextUtils.splitTextByLines("   - 7aaaadddfffredc.fr. Eddd eee.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("   - 7aaaadddfffredc.fr.");
+        assertThat(sss[1]).isEqualTo("Eddd eee.");
+
+        sss = TextUtils.splitTextByLines("   - 8aaaadddfffredc.fr.  Eddd eee.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("   - 8aaaadddfffredc.fr.");
+        assertThat(sss[1]).isEqualTo("Eddd eee.");
+
+        sss = TextUtils.splitTextByLines("   - 9aaaadddfffredc.Fre. Eddd eee.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("   - 9aaaadddfffredc.");
+        assertThat(sss[1]).isEqualTo("Fre. Eddd eee.");
+
+        sss = TextUtils.splitTextByLines("10aaaaaabbbbbbbccccccdddddeeeeefffff ggg.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("10aaaaaabbbbbbbccccccddd");
+        assertThat(sss[1]).isEqualTo("ddeeeeefffff ggg.");
+
+        sss = TextUtils.splitTextByLines("11aaaaaabbbbbbbccccccddd. ddeeeeefffff ggg.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("11aaaaaabbbbbbbccccccddd");
+        assertThat(sss[1]).isEqualTo(". ddeeeeefffff ggg.");
+
+        sss = TextUtils.splitTextByLines("12aaaaaabbbbbbbccccccddd ddeeeeefffff ggg.", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("12aaaaaabbbbbbbccccccddd");
+        assertThat(sss[1]).isEqualTo("ddeeeeefffff ggg.");
+
+        sss = TextUtils.splitTextByLines("   - 13aaadddfffredcfdfred eee.", 24);
+        assertThat(sss.length).isEqualTo(3);
+        assertThat(sss[0]).isEqualTo("   -");
+        assertThat(sss[1]).isEqualTo("13aaadddfffredcfdfred");
+        assertThat(sss[2]).isEqualTo("eee.");
+
+        sss = TextUtils.splitTextByLines("   - 14asssddddeerrrrtgG dfrtg gghtr. Gfd", 24);
+        assertThat(sss.length).isEqualTo(2);
+        assertThat(sss[0]).isEqualTo("   - 14asssddddeerrrrtgG");
+        assertThat(sss[1]).isEqualTo("dfrtg gghtr. Gfd");
+
+        sss = TextUtils.splitTextByLines("   - 15asssddddeerrrrtgf? dfrtg gghtr. Gfd", 24);
+        assertThat(sss.length).isEqualTo(3);
+        assertThat(sss[0]).isEqualTo("   -");
+        assertThat(sss[1]).isEqualTo("15asssddddeerrrrtgf?");
+        assertThat(sss[2]).isEqualTo("dfrtg gghtr. Gfd");
+
+    }
 }

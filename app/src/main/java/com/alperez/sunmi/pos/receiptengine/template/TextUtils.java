@@ -1,6 +1,8 @@
 package com.alperez.sunmi.pos.receiptengine.template;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 final class TextUtils {
 
@@ -49,55 +51,74 @@ final class TextUtils {
         return result.toString();
     }
 
-    
-
-    static boolean isSecondaryDelimiter(char ch) {
-        for (char c : SECONDARY_DELIMITERS) {
-            if (ch == c) return true;
-        }
-        return false;
-    }
-
-    /*public static String[] splitTextByLinesOld(String text, int maxLineLen) {
-        text = text.trim();
+    public static String[] splitTextByLines(String text, int maxLineLen) {
         final List<String> lines = new LinkedList<>();
-        while (text.length() > 0) {
-            int primPosition = text.indexOf('\n');
-            if (primPosition >= 0 && primPosition <= maxLineLen) {
-                lines.add(text.substring(0, primPosition));
-                text = (primPosition == (text.length() - 1)) ? "" : text.substring(primPosition+1);
-                continue;
+        final int txt_len = text.length();
+        int start = 0;
+        boolean protectLeadingWhitespaces = true;
+next_line:
+        while (start < txt_len) {
+
+            if(!protectLeadingWhitespaces) {
+                while (text.charAt(start) == ' ') start ++;
+            } else {
+                protectLeadingWhitespaces = false;
             }
 
-            if (text.length() <= maxLineLen ) {
-                lines.add(text);
-                text = "";
-                continue;
-            }
-
-            // text.length() > maxLineLen
-
-            String rawLine = text.substring(0, maxLineLen);
-            primPosition = rawLine.lastIndexOf(' ');
-            boolean saveDelim = false;
-            if (primPosition <= maxLineLen/2) {
-                int secPos = lastIndexOfSecondaryDelimiter(rawLine);
-                if (secPos > primPosition) {
-                    primPosition = secPos;
-                    saveDelim = true;
+            int end = start;
+            int positionSpace = -1;
+            int positionSecondary = -1;
+            while ((end < txt_len) && ((end - start) < maxLineLen )) {
+                char ch = text.charAt(end);
+                if (ch == '\n') {
+                    //Early go next line and delete the \n character
+                    lines.add(text.substring(start, end));
+                    start = end + 1;
+                    protectLeadingWhitespaces = true;
+                    continue next_line;
+                } else if (ch == ' ') {
+                    positionSpace = end;
+                } else if (isSecondaryDelimiter(ch)) {
+                    positionSecondary = end;
                 }
-            }
-            if (primPosition < 0) {
-                primPosition = maxLineLen;
-                saveDelim = true;
+                end ++;
             }
 
-            lines.add(text.substring(0, primPosition));
-            text = text.substring(saveDelim ? primPosition : (primPosition + 1));
+            if (end >= txt_len) {
+                lines.add(text.substring(start, txt_len));
+                start = txt_len;
+            } else if (text.charAt(end) == ' ') {//test 1-st character of the next line is space
+                lines.add(text.substring(start, end));
+                start = end;
+            } else {
+                boolean useSpace = false;
+                boolean useSecondary = false;
+                if ((positionSpace >= 0) && ((positionSpace - start) >= maxLineLen/3)) {
+                    useSpace = true;
+                } else if (positionSpace >= 0 && positionSecondary < positionSpace) {
+                    useSpace = true;
+                } else if (positionSecondary >= 0) {
+                    useSecondary = true;
+                }
 
+                if (useSpace) {
+                    lines.add(text.substring(start, positionSpace));
+                    start = positionSpace;
+                } else if (useSecondary) {
+                    lines.add(text.substring(start, positionSecondary + 1));
+                    start = positionSecondary + 1;
+                } else {
+                    lines.add(text.substring(start, end));
+                    start = end;
+                }
+
+            }
+        }
+        if ((txt_len >= 2) && (text.charAt(txt_len-1) == '\n') && (text.charAt(txt_len-2) != '\n')) {
+            lines.add("");
         }
         return lines.toArray(new String[lines.size()]);
-    }*/
+    }
 
 
 
@@ -111,6 +132,13 @@ final class TextUtils {
             }
         }
         return -1;
+    }
+
+    static boolean isSecondaryDelimiter(char ch) {
+        for (char c : SECONDARY_DELIMITERS) {
+            if (ch == c) return true;
+        }
+        return false;
     }
 
     private TextUtils() { }
