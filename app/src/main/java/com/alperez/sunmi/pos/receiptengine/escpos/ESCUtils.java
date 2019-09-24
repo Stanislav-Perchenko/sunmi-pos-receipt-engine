@@ -43,7 +43,7 @@ public final class ESCUtils {
     public static byte[] setLineSpacing(int nDots) {
         if (nDots < 0) nDots = 0;
         else if (nDots > 255) nDots = 255;
-        byte[] result = new byte[2];
+        byte[] result = new byte[3];
         result[0] = ESC;
         result[1] = 0x33;
         result[2] = (byte) (nDots & 0xFF);
@@ -59,7 +59,7 @@ public final class ESCUtils {
      * @return
      */
     public static byte[] setUnidirectionalPrintModeEnabled(boolean enabled) {
-        byte[] result = new byte[2];
+        byte[] result = new byte[3];
         result[0] = ESC;
         result[1] = 0x55;
         result[2] = (byte)(enabled ? 1 : 0);
@@ -103,7 +103,7 @@ public final class ESCUtils {
      * @return
      */
     public static byte[] setTextAlignment(TextAlign align) {
-        byte[] result = new byte[2];
+        byte[] result = new byte[3];
         result[0] = ESC;
         result[1] = 0x61;
         result[2] = align.getEscPosValue();
@@ -117,7 +117,7 @@ public final class ESCUtils {
      * @return
      */
     public static byte[] setBoldEnabled(boolean enabled) {
-        byte[] result = new byte[2];
+        byte[] result = new byte[3];
         result[0] = ESC;
         result[1] = 0x45;
         result[2] = (byte)(enabled ? 1 : 0);
@@ -126,7 +126,7 @@ public final class ESCUtils {
 
     public static byte[] setCharacterScale(int scaleWidth, int scaleHeight) {
         int combinedScale = ((ensureCharScaleValue(scaleWidth) << 4) & 0xF0) | (ensureCharScaleValue(scaleHeight) & 0x0F);
-        byte[] result = new byte[2];
+        byte[] result = new byte[3];
         result[0] = GS;
         result[1] = 0x21;
         result[2] = (byte) combinedScale;

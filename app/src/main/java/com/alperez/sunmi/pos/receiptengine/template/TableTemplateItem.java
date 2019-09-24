@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 final class TableTemplateItem extends BaseTemplateItem {
     private final String json;
@@ -148,11 +147,6 @@ final class TableTemplateItem extends BaseTemplateItem {
         ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
 
 
-
-
-
-        final int n = 4 + new Random().nextInt(6);
-        for (int i=0; i<n; i++) ret.add(new byte[0]);
         return ret;
     }
 }
