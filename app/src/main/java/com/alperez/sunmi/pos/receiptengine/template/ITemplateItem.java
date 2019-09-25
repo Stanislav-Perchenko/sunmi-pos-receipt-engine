@@ -34,6 +34,8 @@ public interface ITemplateItem {
                 return new SingleValueTemplateItem(jObj, valueMapper);
             case TableTemplateItem.TYPE_JSON_VALUE:
                 return new TableTemplateItem(jObj, valueMapper);
+            case GoodsCollectTemplateItem.TYPE_JSON_VALUE:
+                return new GoodsCollectTemplateItem(jObj, valueMapper);
             default:
                 return null;
         }

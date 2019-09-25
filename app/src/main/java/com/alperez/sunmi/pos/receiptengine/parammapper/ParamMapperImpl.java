@@ -3,6 +3,8 @@ package com.alperez.sunmi.pos.receiptengine.parammapper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.alperez.sunmi.pos.receiptengine.template.GoodsCollectTemplateItem;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -183,5 +185,53 @@ public class ParamMapperImpl implements ParameterValueMapper {
         } catch (JSONException | RuntimeException e) {
             return new byte[0];
         }
+    }
+
+
+    @Override
+    public <T extends JsonMappableEntity> T[] mapObjectArrayValue(@NonNull String template) throws JSONException {
+            String param = template.substring(template.indexOf('{')+1, template.lastIndexOf('}'));
+            if ((param.indexOf('{') >= 0) || (param.indexOf('}') >= 0)) {
+                throw new JSONException("only single parameter is allowed - "+param);
+            }
+
+            int typeDelimIndex = param.indexOf(':');
+            if (typeDelimIndex <= 0) throw new JSONException("");
+
+            final String path = param.substring(0, typeDelimIndex).trim();
+            final String type = param.substring(typeDelimIndex+1).trim();
+
+            final String[] p_segs = path.split("\\.");
+            JSONObject currentJson = dataJson;
+            T[] result = null;
+            for (int i=0; i<p_segs.length; i++) {
+
+                if (i < (p_segs.length-1)) {
+                    //Extract intermediate objects
+                    int arrIndex = optArrayIndex(p_segs[i]);
+                    if (arrIndex < 0) {
+                        currentJson = currentJson.getJSONObject(p_segs[i]);
+                    } else {
+                        JSONArray jArr = currentJson.getJSONArray(getCleanArrayName(p_segs[i]));
+                        currentJson = jArr.getJSONObject(arrIndex);
+                    }
+                } else {
+                    JSONArray jArr = currentJson.getJSONArray(p_segs[i]);
+
+
+                    switch (type) {
+                        case "CollectedGoodItem[]":
+                            GoodsCollectTemplateItem.GoodsCollectDataItem[] data = new GoodsCollectTemplateItem.GoodsCollectDataItem[jArr.length()];
+                            for (int j=0; j<jArr.length(); j++) {
+                                data[j] = new GoodsCollectTemplateItem.GoodsCollectDataItem(jArr.getJSONObject(j));
+                            }
+                            result = (T[])data;
+                            break;
+                        default:
+                            throw new JSONException("Unsupported object type - "+type);
+                    }
+                }
+            }
+            return result;
     }
 }

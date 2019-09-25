@@ -13,6 +13,9 @@ public interface ParameterValueMapper {
     @NonNull
     byte[] mapByteArrayValue(@NonNull String template);
 
+
+    <T extends JsonMappableEntity> T[] mapObjectArrayValue(@NonNull String template) throws JSONException;
+
     static ParameterValueMapper getInstance(JSONObject dataJson) {
         return new ParamMapperImpl(dataJson);
     }
