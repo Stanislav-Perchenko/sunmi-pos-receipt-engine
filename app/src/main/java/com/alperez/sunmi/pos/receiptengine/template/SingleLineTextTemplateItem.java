@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Objects;
 
 final class SingleLineTextTemplateItem extends TextTemplateItem {
@@ -56,14 +57,17 @@ final class SingleLineTextTemplateItem extends TextTemplateItem {
     /************************  Build ESC/POS printer raw data  ************************************/
     @Override
     public Collection<byte[]> getPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
-        Collection<byte[]> dataset = super.getPrinterRawData(charset, printerParams);
+        Collection<byte[]> dataset = new LinkedList<>();
+        dataset.add(ESCUtils.setLineSpacingDefault());
+        dataset.addAll(super.getPrinterRawData(charset, printerParams));
+
 
         String run_str = isAllCaps() ? getTextValue().toUpperCase() : getTextValue();
 
         int sc_w = getScaleWidth();
         if (sc_w < printerParams.characterScaleWidthLimits()[0]) sc_w = printerParams.characterScaleWidthLimits()[0];
         else if (sc_w > printerParams.characterScaleWidthLimits()[1]) sc_w = printerParams.characterScaleWidthLimits()[1];
-        int maxLen = printerParams.lineLengthFromScaleWidth(sc_w);
+        final int maxLen = printerParams.lineLengthFromScaleWidth(sc_w);
         if(run_str.length() > maxLen) {
             run_str = run_str.substring(0, maxLen);
         }

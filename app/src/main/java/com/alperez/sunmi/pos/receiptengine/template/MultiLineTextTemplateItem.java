@@ -14,18 +14,25 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Objects;
 
 final class MultiLineTextTemplateItem extends TextTemplateItem {
 
+    public boolean isReducedLineSpacing() {
+        return reducedLineSpacing;
+    }
+
+    private final boolean reducedLineSpacing;
     private final String textValue;
 
     MultiLineTextTemplateItem(JSONObject jObj, @NonNull ParameterValueMapper valueMapper) throws JSONException {
         super(jObj, valueMapper);
         textValue = valueMapper.mapTextValue(jObj.getString("text"));
+        reducedLineSpacing = jObj.optBoolean("reduced_line_spacing", false);
     }
 
-    public String getTextValue() {
+    String getTextValue() {
         return textValue;
     }
 
@@ -62,13 +69,16 @@ final class MultiLineTextTemplateItem extends TextTemplateItem {
         int sc_w = getScaleWidth();
         if (sc_w < printerParams.characterScaleWidthLimits()[0]) sc_w = printerParams.characterScaleWidthLimits()[0];
         else if (sc_w > printerParams.characterScaleWidthLimits()[1]) sc_w = printerParams.characterScaleWidthLimits()[1];
-        int maxLen = printerParams.lineLengthFromScaleWidth(sc_w);
+        final int maxLen = printerParams.lineLengthFromScaleWidth(sc_w);
 
 
         final String run_str = TextUtils.reduceWitespacesBeforeLayout(isAllCaps() ? getTextValue().toUpperCase() : getTextValue(), maxLen);
 
-
-        Collection<byte[]> dataset = super.getPrinterRawData(charset, printerParams);
+        Collection<byte[]> dataset = new LinkedList<>();
+        dataset.add(isReducedLineSpacing()
+                ? ESCUtils.setLineSpacing(printerParams.reducedLineSpacingValue())
+                : ESCUtils.setLineSpacingDefault());
+        dataset.addAll(super.getPrinterRawData(charset, printerParams));
         if (run_str.length() > maxLen) {
             String[] lines = TextUtils.splitTextByLines(run_str, maxLen);
             ByteArrayOutputStream bos = new ByteArrayOutputStream(run_str.length()*2+10);

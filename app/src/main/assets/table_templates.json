@@ -1,0 +1,63 @@
+{
+  "print_mode": "text",
+  "charset": "CP437",
+  "force_unidir_print": false,
+  "data": [
+    {
+      "type": "single_text",
+      "text": "{organization.title: text}",
+      "all_caps": true,
+      "bold": true,
+      "text_align": "center",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "table",
+      "n_columns": 2,
+      "col_widths": [34, 66],
+      "col_aligns": ["left", "right"],
+      "col_start_padding": [0, 0],
+      "rows": [
+        {
+          "border": "START",
+          "cells": [
+            "{ewc_codes[0].code: text}",
+            "{ewc_codes[0].title: text}"
+          ]
+        },{
+          "border": "MIDDLE",
+          "cells": [
+            "{ewc_codes[1].code: text}",
+            "{ewc_codes[1].title: text}"
+          ]
+        },{
+          "border": "MIDDLE",
+          "cells": [
+            "{ewc_codes[2].code: text}",
+            "{ewc_codes[2].title: text}"
+          ]
+        },{
+          "border": "MIDDLE",
+          "cells": [
+            "{ewc_codes[3].code: text}",
+            "{ewc_codes[3].title: text}"
+          ]
+        },{
+          "border": "END",
+          "cells": [
+            "{ewc_codes[4].code: text}",
+            "{ewc_codes[4].title: text}"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "multiline_text",
+      "text": "This receipt will enable you to claim applicable\n\n",
+      "text_align": "left",
+      "scale_w": 1,
+      "scale_h": 1
+    }
+  ]
+}

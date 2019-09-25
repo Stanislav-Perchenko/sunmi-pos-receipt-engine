@@ -108,6 +108,7 @@ final class SingleValueTemplateItem extends BaseTemplateItem {
             for (int i=0; i<value_lines.length; i++) {
                 final int valueExtraChars = valueMaxLen - value_lines[i].length();
                 if (i == 0) {
+                    bos.write(ESCUtils.setLineSpacingDefault());
                     bos.write(ESCUtils.setBoldEnabled(isNameBold));
                     bos.write(work_name.getBytes(charset.getEncodingStdName()));
                     if (valueTextAlign == TextAlign.ALIGN_RIGHT && valueExtraChars > 0) {
@@ -118,6 +119,7 @@ final class SingleValueTemplateItem extends BaseTemplateItem {
                     int tabulation = work_name.length();
                     if (valueTextAlign == TextAlign.ALIGN_RIGHT) tabulation += valueExtraChars;
                     TextUtils.writeNCharacters(bos, ' ', charset, tabulation);
+                    if (i == 1) bos.write(ESCUtils.setLineSpacing(printerParams.reducedLineSpacingValue()));
                 }
                 bos.write(value_lines[i].getBytes(charset.getEncodingStdName()));
                 bos.write("\n".getBytes(charset.getEncodingStdName()));

@@ -4,6 +4,12 @@ public interface PosPrinterParams {
     boolean isUnidirectionPrintSupported();
 
     /**
+     *
+     * @return
+     */
+    int reducedLineSpacingValue();
+
+    /**
      * An array of size 2 defines width scale limits
      * @return [0] - lower limit, [1] - upper limit
      */

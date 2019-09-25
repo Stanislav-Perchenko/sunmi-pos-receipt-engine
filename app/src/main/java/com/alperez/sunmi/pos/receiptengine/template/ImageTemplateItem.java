@@ -63,6 +63,7 @@ final class ImageTemplateItem extends BaseTemplateItem {
         if (printerParams.isUnidirectionPrintSupported()) ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(true));
 
         ret.add(ESCUtils.setTextAlignment(TextAlign.ALIGN_CENTER));
+        ret.add(ESCUtils.setBoldEnabled(false));
         ret.add("\n{image}\n\n".getBytes(charset.getEncodingStdName()));
 
         if (printerParams.isUnidirectionPrintSupported()) ret.add(ESCUtils.setUnidirectionalPrintModeEnabled(false));

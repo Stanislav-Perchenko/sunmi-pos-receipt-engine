@@ -61,6 +61,7 @@
     {
       "type": "multiline_text",
       "text": "\nCollection receipt & Waste Transfer Note\n",
+      "reduced_line_spacing": true,
       "text_align": "center",
       "scale_w": 1,
       "scale_h": 1
@@ -152,9 +153,22 @@
       "value_align": "left"
     },
     {
+      "type": "single_text",
+      "text": "",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
       "type": "multiline_text",
-      "text": "\nBy signing in the section above I confirm that i have fulfilled my duty to apply the waste hierarchy as required by Regulation 12 of the Waste (England and Wales) regulations\n",
+      "text": "By signing in the section above I confirm that i have fulfilled my duty to apply the waste hierarchy as required by Regulation 12 of the Waste (England and Wales) regulations",
+      "reduced_line_spacing": true,
       "text_align": "left",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_text",
+      "text": "",
       "scale_w": 1,
       "scale_h": 1
     },
@@ -169,7 +183,7 @@
     {
       "type": "table",
       "n_columns": 2,
-      "col_widths": [31, 69],
+      "col_widths": [34, 66],
       "col_aligns": ["center", "left"],
       "col_start_padding": [0, 1],
       "rows": [
@@ -208,8 +222,15 @@
     },
     {
       "type": "multiline_text",
-      "text": "\nThis receipt will enable you to claim recycling credits where applicable\n",
+      "text": "This receipt will enable you to claim recycling credits where applicable",
+      "reduced_line_spacing": true,
       "text_align": "left",
+      "scale_w": 1,
+      "scale_h": 1
+    },
+    {
+      "type": "single_text",
+      "text": "",
       "scale_w": 1,
       "scale_h": 1
     },

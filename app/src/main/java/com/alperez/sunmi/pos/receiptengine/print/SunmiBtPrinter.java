@@ -63,6 +63,11 @@ final class SunmiBtPrinter implements PosPrinter {
             }
 
             @Override
+            public int reducedLineSpacingValue() {
+                return 24;
+            }
+
+            @Override
             public int[] characterScaleWidthLimits() {
                 return new int[]{1, 4};
             }
