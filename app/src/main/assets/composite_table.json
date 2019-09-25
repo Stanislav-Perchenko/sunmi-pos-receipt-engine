@@ -1,0 +1,52 @@
+{
+  "print_mode": "text",
+  "charset": "CP437",
+  "force_unidir_print": false,
+  "data": [
+    {
+      "type": "goods_collect_table",
+      "column_items": {
+        "title": "ITEMS",
+        "title_align": "left",
+        "title_bold": true,
+        "content_align": "left",
+        "content_bold": false
+      },
+      "column_weight": {
+        "title": "Weight\n(KG)",
+        "title_align": "left",
+        "title_bold": false,
+        "content_align": "right",
+        "content_bold": false,
+        "min_width": 6
+      },
+      "column_amount": {
+        "title": "Amount\n($)",
+        "title_align": "left",
+        "title_bold": false,
+        "content_align": "right",
+        "content_bold": false,
+        "min_width": 6,
+        "max_width": 8,
+        "separate_thousands": true
+      },
+      "row_total": {
+        "title": "Total ($)",
+        "bold": true,
+        "align_title": "left",
+        "align_value": "right"
+      },
+      "opt_items_start_padding": 1,
+      "data": "{collected_goods: CollectedGoodItem[]}"
+    },
+
+
+    {
+      "type": "multiline_text",
+      "text": "This receipt will enable you to claim applicable\n\n",
+      "text_align": "left",
+      "scale_w": 1,
+      "scale_h": 1
+    }
+  ]
+}

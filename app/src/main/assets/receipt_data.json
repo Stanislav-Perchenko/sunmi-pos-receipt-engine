@@ -41,5 +41,38 @@
       "code": "20 02 03",
       "title": "Other non-\nbiodegradable"
     }
+  ],
+  "collected_goods": [
+    {
+      "full_category_name": "Clothes",
+      "weight_kg": 127,
+      "amount": 15260,
+      "currency_scale": 2
+    }, {
+      "full_category_name": "Shoes",
+      "weight_kg": 500,
+      "amount": 15600,
+      "currency_scale": 2
+    }, {
+      "full_category_name": "Textile Rum.",
+      "weight_kg": 10,
+      "amount": 75000,
+      "currency_scale": 2
+    }, {
+      "full_category_name": "Books",
+      "weight_kg": 1100,
+      "amount": 14000,
+      "currency_scale": 2
+    }, {
+      "full_category_name": "Bric-a-Brac",
+      "weight_kg": 5,
+      "amount": 720,
+      "currency_scale": 2
+    }, {
+      "full_category_name": "Household Waste",
+      "weight_kg": 75,
+      "amount": 135,
+      "currency_scale": 2
+    }
   ]
 }
