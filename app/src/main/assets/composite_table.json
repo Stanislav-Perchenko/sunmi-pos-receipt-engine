@@ -27,8 +27,7 @@
         "content_align": "right",
         "content_bold": false,
         "min_width": 6,
-        "max_width": 8,
-        "separate_thousands": true
+        "max_width": 8
       },
       "row_total": {
         "title": "Total ($)",
@@ -36,6 +35,7 @@
         "align_title": "left",
         "align_value": "right"
       },
+      "price_separate_thousands": true,
       "opt_items_start_padding": 1,
       "data": "{collected_goods: CollectedGoodItem[]}"
     }
