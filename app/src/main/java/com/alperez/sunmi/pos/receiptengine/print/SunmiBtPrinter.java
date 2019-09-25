@@ -92,6 +92,12 @@ final class SunmiBtPrinter implements PosPrinter {
                         throw new IllegalArgumentException("Width scale is not supported - "+scaleWidth+". Allowed [1, 4]");
                 }
             }
+
+            @Override
+            public boolean equals(@Nullable Object obj) {
+                //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                return true;
+            }
         };
     }
 
@@ -172,7 +178,7 @@ main_cycle: while (!released.get()) {
             }
 
             // Protection delay (ensure no printer input buffer overflow)
-            try { Thread.sleep(BuildConfig.DEBUG ? 333 : 80); } catch (InterruptedException e) { }
+            try { Thread.sleep(BuildConfig.DEBUG ? 150 : 150); } catch (InterruptedException e) { }
 
         } // main thread cycle
     } //work()
