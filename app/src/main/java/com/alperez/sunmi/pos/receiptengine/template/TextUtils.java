@@ -4,6 +4,7 @@ import com.alperez.sunmi.pos.receiptengine.escpos.Charset;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -165,20 +166,16 @@ next_line:
     }
 
 
-    public static String formatPrice(long amount, int scale, boolean separateThousands) {
+    public static String formatPrice(long amount, int scale, boolean formatAsCurrency, Locale locale) {
 
         double value = amount;
         for (int i=0; i<scale; i++) value /= 10;
 
-        return (separateThousands)
-                ? String.format("%,."+scale+"f", value, Locale.ENGLISH)
-                : String.format("%."+scale+"f", value, Locale.ENGLISH);
-    }
-
-    public static String formatPrice(double value, int scale, boolean separateThousands) {
-        return (separateThousands)
-                ? String.format("%,."+scale+"f", value, Locale.ENGLISH)
-                : String.format("%."+scale+"f", value, Locale.ENGLISH);
+        if (formatAsCurrency) {
+            return NumberFormat.getCurrencyInstance(locale).format(value);
+        } else {
+            return String.format("%."+scale+"f", value);
+        }
     }
 
     //TODO Make Unit test for this

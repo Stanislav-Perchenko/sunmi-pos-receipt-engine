@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Locale;
 
 public class GoodsCollectTemplateItem extends BaseTemplateItem {
 
@@ -22,9 +23,8 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
     private final ColumnTemplate columnWeightTemplate;
     private final ColumnTemplate columnAmountTemplate;
     private final RowTotalTemplate rowTotalTemplate;
-    private final boolean isPriceSeparatedThousands;
     private final int optItemsStartPadding;
-
+    private final Locale locale;
     private final GoodsCollectDataItem[] collectedItems;
 
 
@@ -38,8 +38,19 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         columnWeightTemplate = new ColumnTemplate(jObj.getJSONObject("column_weight"));
         columnAmountTemplate = new ColumnTemplate(jObj.getJSONObject("column_amount"));
         rowTotalTemplate = new RowTotalTemplate(jObj.getJSONObject("row_total"));
-        isPriceSeparatedThousands = jObj.optBoolean("price_separate_thousands", false);
         optItemsStartPadding = jObj.optInt("opt_items_start_padding", 0);
+        if (jObj.has("locale")) {
+            try {
+                String[] sLoc = jObj.getString("locale").split("-");
+                locale = new Locale(sLoc[0], sLoc[1], "");
+            } catch (Exception e) {
+                throw new JSONException("wrong Locale value - "+jObj.getString("locale"));
+            }
+        } else {
+            locale = Locale.getDefault();
+        }
+
+
 
         collectedItems = valueMapper.mapObjectArrayValue(jObj.getString("data"));
 
@@ -104,7 +115,6 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
     private Collection<byte[]> buildPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
         this.rawDataCharset = charset;
         this.rawDataPrinterParams = printerParams;
-        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         int sc_w = 1;
         if (sc_w < printerParams.characterScaleWidthLimits()[0]) sc_w = printerParams.characterScaleWidthLimits()[0];
@@ -424,7 +434,7 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         for (int i=0; i < this.collectedItems.length; i++) {
             splitColumn1[i+1] = new String[]{this.collectedItems[i].categoryName};
             splitColumn2[i+1] = new String[]{""+this.collectedItems[i].collectedWeight};
-            splitColumn3[i+1] = new String[]{TextUtils.formatPrice(this.collectedItems[i].amount, this.collectedItems[i].currencyScale, isPriceSeparatedThousands)};
+            splitColumn3[i+1] = new String[]{TextUtils.formatPrice(this.collectedItems[i].amount, this.collectedItems[i].currencyScale, false, locale)};
         }
     }
 
@@ -437,7 +447,10 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
                 maxScale = this.collectedItems[i].currencyScale;
             }
         }
-        return new String[]{TextUtils.formatPrice(total, maxScale, isPriceSeparatedThousands)};
+
+        for (int i=0; i<maxScale; i++) total *= 10;
+
+        return new String[]{TextUtils.formatPrice((long)total, maxScale, rowTotalTemplate.valueFormatAsCurrency, locale)};
     }
 
     private int calculateColumn3FinalWidth() {
@@ -575,12 +588,14 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         final boolean isBold;
         final TextAlign titleAlign;
         final TextAlign valueAlign;
+        final boolean valueFormatAsCurrency;
 
         RowTotalTemplate(JSONObject jObj) throws JSONException {
             title = jObj.getString("title").trim();
             isBold = jObj.optBoolean("bold", false);
             titleAlign = TextAlign.fromJson(jObj.optString("align_title", TextAlign.ALIGN_LEFT.getJsonValue()));
             valueAlign = TextAlign.fromJson(jObj.optString("align_value", TextAlign.ALIGN_LEFT.getJsonValue()));
+            valueFormatAsCurrency = jObj.optBoolean("format_value_as_currency", false);
         }
     }
 }
