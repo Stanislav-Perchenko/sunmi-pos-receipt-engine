@@ -110,10 +110,41 @@
       "scale_h": 1
     },
     {
-      "type": "single_text",
-      "text": "",
-      "scale_w": 1,
-      "scale_h": 1
+      "type": "goods_collect_table",
+      "locale": "en-GB",
+      "opt_items_start_padding": 1,
+      "column_items": {
+        "title": "ITEMS",
+        "title_align": "left",
+        "title_bold": true,
+        "content_align": "left",
+        "content_bold": false
+      },
+      "column_weight": {
+        "title": "Weight\n(KG)",
+        "title_align": "left",
+        "title_bold": false,
+        "content_align": "right",
+        "content_bold": false,
+        "min_width": 6
+      },
+      "column_amount": {
+        "title": "Amount\n(\u00A3)",
+        "title_align": "left",
+        "title_bold": false,
+        "content_align": "right",
+        "content_bold": false,
+        "min_width": 6,
+        "max_width": 9
+      },
+      "row_total": {
+        "title": "Total",
+        "bold": true,
+        "align_title": "left",
+        "align_value": "right",
+        "format_value_as_currency": true
+      },
+      "data": "{collected_goods: CollectedGoodItem[]}"
     },
     {
       "type": "single_text",

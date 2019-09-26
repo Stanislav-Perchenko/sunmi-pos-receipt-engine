@@ -95,6 +95,8 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
 
 
 
+
+    /***************************  The Main method to build receipt RAW data  **********************/
     private final String[][] splitColumn1;
     private final String[][] splitColumn2;
     private final String[][] splitColumn3;
@@ -104,12 +106,6 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
     private int finColumn2Width; //target width of the column #2
     private int finColumn1Width;
     private int finStartPaddingColumnOne;
-
-
-
-
-
-
 
 
     private Collection<byte[]> buildPrinterRawData(Charset charset, PosPrinterParams printerParams) throws UnsupportedEncodingException {
@@ -290,139 +286,10 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
 
         dataset.add(ESCUtils.nextLine(1));
         dataset.add(ESCUtils.setLineSpacingDefault());
-        dataset.add("---> aaa\n".getBytes(charset.getEncodingStdName()));
         return dataset;
     }
+    /*====================  End of the Main method to build receipt RAW data  ====================*/
 
-    private void printTextIntoCell(char[][] charTable, CharSequence text, int top, int cellLeft, int cellWidth, TextAlign align, int startPadding) {
-        int printLen = Math.min(text.length(), (cellWidth - startPadding));
-        int index = (align == TextAlign.ALIGN_RIGHT)
-                ? cellLeft + cellWidth - (startPadding + printLen)
-                : cellLeft + startPadding;
-        for (int i=0; i<printLen; i++, index++) {
-            charTable[top][index] = text.charAt(i);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void printStartHorizontalBorder(char[] dst) {
-        final int len = dst.length;
-        final int delim_1 = finColumn1Width + 1;
-        final int delim_2 = delim_1 + finColumn2Width + 1;
-        dst[0] = '\u250C';
-        for (int i=1; i < len-1; i++) {
-            if (i == delim_1) {
-                dst[i] = '\u252C';
-            } else if (i == delim_2) {
-                dst[i] = '\u252C';
-            } else {
-                dst[i] = '\u2500';
-            }
-        }
-        dst[len-1] = '\u2510';
-    }
-
-    private void printMiddleHorizontalBorder(char[] dst) {
-        final int len = dst.length;
-        final int delim_1 = finColumn1Width + 1;
-        final int delim_2 = delim_1 + finColumn2Width + 1;
-        dst[0] = '\u251C';
-        for (int i=1; i < len-1; i++) {
-            if (i == delim_1) {
-                dst[i] = '\u253C';
-            } else if (i == delim_2) {
-                dst[i] = '\u253C';
-            } else {
-                dst[i] = '\u2500';
-            }
-        }
-        dst[len-1] = '\u2524';
-    }
-
-    private void printPreEndHorizontalBorder(char[] dst) {
-        final int len = dst.length;
-        final int delim_1 = finColumn1Width + 1;
-        final int delim_2 = delim_1 + finColumn2Width + 1;
-        dst[0] = '\u251C';
-        for (int i=1; i < len-1; i++) {
-            if (i == delim_1) {
-                dst[i] = '\u2534';
-            } else if (i == delim_2) {
-                dst[i] = '\u253C';
-            } else {
-                dst[i] = '\u2500';
-            }
-        }
-        dst[len-1] = '\u2524';
-    }
-
-
-    private void printEndHorizontalBorder(char[] dst) {
-        final int len = dst.length;
-        final int delim_2 = finColumn1Width + finColumn2Width + 2;
-        dst[0] = '\u2514';
-        for (int i=1; i < len-1; i++) {
-            if (i == delim_2) {
-                dst[i] = '\u2534';
-            } else {
-                dst[i] = '\u2500';
-            }
-        }
-        dst[len-1] = '\u2518';
-    }
-
-    private void printContentEmptyRow(char[] dst) {
-        final int len = dst.length;
-        final int delim_1 = finColumn1Width + 1;
-        final int delim_2 = delim_1 + finColumn2Width + 1;
-        dst[0] = '\u2502';
-        for (int i=1; i < len-1; i++) {
-            if (i == delim_1 || i == delim_2) {
-                dst[i] = '\u2502';
-            } else {
-                dst[i] = '\u0020';
-            }
-        }
-        dst[len-1] = '\u2502';
-    }
-
-    private void printLastContentEmptyRow(char[] dst) {
-        final int len = dst.length;
-        final int delim_2 = finColumn1Width + finColumn2Width + 2;
-        dst[0] = '\u2502';
-        for (int i=1; i < len-1; i++) {
-            if (i == delim_2) {
-                dst[i] = '\u2502';
-            } else {
-                dst[i] = '\u0020';
-            }
-        }
-        dst[len-1] = '\u2502';
-    }
 
 
     private void fillInSplitColumnsWithOriginalContent() {
@@ -544,6 +411,116 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
             totalTitleText = TextUtils.splitTextByLines(totalTitleText[0], actualCellWidth);
         }
     }
+
+
+
+
+    /************************  Printing character into 'Videomemory'  *****************************/
+    private void printStartHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u250C';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1) {
+                dst[i] = '\u252C';
+            } else if (i == delim_2) {
+                dst[i] = '\u252C';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2510';
+    }
+
+    private void printMiddleHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u251C';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1) {
+                dst[i] = '\u253C';
+            } else if (i == delim_2) {
+                dst[i] = '\u253C';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2524';
+    }
+
+    private void printPreEndHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u251C';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1) {
+                dst[i] = '\u2534';
+            } else if (i == delim_2) {
+                dst[i] = '\u253C';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2524';
+    }
+
+
+    private void printEndHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_2 = finColumn1Width + finColumn2Width + 2;
+        dst[0] = '\u2514';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_2) {
+                dst[i] = '\u2534';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2518';
+    }
+
+    private void printContentEmptyRow(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u2502';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1 || i == delim_2) {
+                dst[i] = '\u2502';
+            } else {
+                dst[i] = '\u0020';
+            }
+        }
+        dst[len-1] = '\u2502';
+    }
+
+    private void printLastContentEmptyRow(char[] dst) {
+        final int len = dst.length;
+        final int delim_2 = finColumn1Width + finColumn2Width + 2;
+        dst[0] = '\u2502';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_2) {
+                dst[i] = '\u2502';
+            } else {
+                dst[i] = '\u0020';
+            }
+        }
+        dst[len-1] = '\u2502';
+    }
+
+    private void printTextIntoCell(char[][] charTable, CharSequence text, int top, int cellLeft, int cellWidth, TextAlign align, int startPadding) {
+        int printLen = Math.min(text.length(), (cellWidth - startPadding));
+        int index = (align == TextAlign.ALIGN_RIGHT)
+                ? cellLeft + cellWidth - (startPadding + printLen)
+                : cellLeft + startPadding;
+        for (int i=0; i<printLen; i++, index++) {
+            charTable[top][index] = text.charAt(i);
+        }
+    }
+
 
 
 
