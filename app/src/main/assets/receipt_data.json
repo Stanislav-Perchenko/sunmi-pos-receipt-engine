@@ -56,12 +56,12 @@
     }, {
       "full_category_name": "Textile Rum.",
       "weight_kg": 10,
-      "amount": 75000,
+      "amount": 750300,
       "currency_scale": 2
     }, {
       "full_category_name": "Books",
       "weight_kg": 1100,
-      "amount": 14000,
+      "amount": 140080,
       "currency_scale": 2
     }, {
       "full_category_name": "Bric-a-Brac",
@@ -71,7 +71,7 @@
     }, {
       "full_category_name": "Household Waste",
       "weight_kg": 75,
-      "amount": 135,
+      "amount": 135056,
       "currency_scale": 2
     }
   ]

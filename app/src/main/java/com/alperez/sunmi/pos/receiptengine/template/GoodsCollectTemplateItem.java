@@ -88,6 +88,7 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
     private final String[][] splitColumn2;
     private final String[][] splitColumn3;
     private String[] totalValueText;
+    private String[] totalTitleText;
     private int finColumn3Width; //target width of the column #3
     private int finColumn2Width; //target width of the column #2
     private int finColumn1Width;
@@ -118,7 +119,8 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         final int nCollectedItems = this.collectedItems.length;
 
 
-        //----  Build "Total" value  ----
+        //----  Build "Total" title and value texts  ----
+        totalTitleText = new String[]{rowTotalTemplate.title};
         totalValueText = buildTotalValueText();
 
         //----  Calculate final width of the column 3 and split content  ----
@@ -134,6 +136,11 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         checkAndSplitColumn1Content();
 
 
+        //----  Check and split Total title if necessary  ----
+        checkAndSplitTotalTitle();
+
+
+        //---------  Build character table as the Video-memory  -----------------
         final int numOrigRows = nCollectedItems + 2;
         int[] numPrintedRowsForTableRows = new int[numOrigRows];
         for (int i_row=0; i_row < (numOrigRows - 1); i_row++) {
@@ -146,12 +153,13 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
             }
             numPrintedRowsForTableRows[i_row] = max;
         }
-        numPrintedRowsForTableRows[numOrigRows-1] = totalValueText.length;
+        numPrintedRowsForTableRows[numOrigRows-1] = Math.max(totalTitleText.length, totalValueText.length);
 
 
         int charTableH = nCollectedItems+2+1; //num of horizontal lines;
         for (int i=0; i < numOrigRows; i++) charTableH += numPrintedRowsForTableRows[i];
         char[][] charTable = new char[charTableH][maxPrintW];
+        int [][] boldTable = new int [charTableH][maxPrintW];
         for (int origRowIndex=0, prnRowIndex = 0; origRowIndex <= numOrigRows; origRowIndex++) {
             if (origRowIndex == 0) {
                 printStartHorizontalBorder(charTable[prnRowIndex ++]);
@@ -172,24 +180,144 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
             }
         }
 
+        int[] rowStartIndexesInChartable = new int[numOrigRows];
+        for (int i=0, rowStartIndex = 1; i<numOrigRows; i++) {
+            rowStartIndexesInChartable[i] = rowStartIndex;
+            rowStartIndex += (numPrintedRowsForTableRows[i]+1);
+        }
+
+
+        //----  fill in Column 1 with content  ----
+        for (int i=0; i < numOrigRows-1; i++) {
+            int vertiPos = rowStartIndexesInChartable[i];
+            int horizPos = 1;
+            final TextAlign align = (i==0) ? columnItemsTemplate.titleAlign : columnItemsTemplate.contentAlign;
+            final boolean isBold = (i==0) ? columnItemsTemplate.isTitleBold : columnItemsTemplate.isContentBold;
+            String[] cellRows = splitColumn1[i];
+            for (int j=0; j<cellRows.length; j++, vertiPos++) {
+                printTextIntoCell(charTable, cellRows[j], vertiPos, horizPos, finColumn1Width, align, finStartPaddingColumnOne);
+                if (isBold) {
+                    boldTable[vertiPos][horizPos] = +1;
+                    boldTable[vertiPos][horizPos + finColumn1Width] = -1;
+                }
+            }
+        }
+
+        //----  fill in Column 2 with content  ----
+        for (int i=0; i < numOrigRows-1; i++) {
+            int vertiPos = rowStartIndexesInChartable[i];
+            int horizPos = 1 + finColumn1Width + 1;
+            final TextAlign align = (i==0) ? columnWeightTemplate.titleAlign : columnWeightTemplate.contentAlign;
+            final boolean isBold = (i==0) ? columnWeightTemplate.isTitleBold : columnWeightTemplate.isContentBold;
+            String[] cellRows = splitColumn2[i];
+            for (int j=0; j<cellRows.length; j++, vertiPos++) {
+                printTextIntoCell(charTable, cellRows[j], vertiPos, horizPos, finColumn2Width, align, 0);
+                if (isBold) {
+                    boldTable[vertiPos][horizPos] = +1;
+                    boldTable[vertiPos][horizPos + finColumn2Width] = -1;
+                }
+            }
+        }
+
+        //----  fill in Column 3 with content  ----
+        for (int i=0; i < numOrigRows-1; i++) {
+            int vertiPos = rowStartIndexesInChartable[i];
+            int horizPos = 1 + finColumn1Width + 1 + finColumn2Width + 1;
+            final TextAlign align = (i==0) ? columnAmountTemplate.titleAlign : columnAmountTemplate.contentAlign;
+            final boolean isBold = (i==0) ? columnAmountTemplate.isTitleBold : columnAmountTemplate.isContentBold;
+            String[] cellRows = splitColumn3[i];
+            for (int j=0; j<cellRows.length; j++, vertiPos++) {
+                printTextIntoCell(charTable, cellRows[j], vertiPos, horizPos, finColumn3Width, align, 0);
+                if (isBold) {
+                    boldTable[vertiPos][horizPos] = +1;
+                    boldTable[vertiPos][horizPos + finColumn3Width] = -1;
+                }
+            }
+        }
+
+        //----  fill in "total" cell title  ----
+        int vertiPos = rowStartIndexesInChartable[numOrigRows-1];
+        int horizPos = 1;
+        final int totalTitleCellWidth = finColumn1Width + 1 + finColumn2Width;
+        for (int i=0; i<totalTitleText.length; i++, vertiPos++) {
+            printTextIntoCell(charTable,  totalTitleText[i], vertiPos, horizPos, totalTitleCellWidth, rowTotalTemplate.titleAlign, finStartPaddingColumnOne);
+            if (rowTotalTemplate.isBold) {
+                boldTable[vertiPos][horizPos] = +1;
+                boldTable[vertiPos][horizPos + totalTitleCellWidth] = -1;
+            }
+        }
+
+        //----  fill in "total" cell value  ----
+        vertiPos = rowStartIndexesInChartable[numOrigRows-1];
+        horizPos = 1 + totalTitleCellWidth + 1;
+        for (int i=0; i<totalValueText.length; i++, vertiPos++) {
+            printTextIntoCell(charTable,  totalValueText[i], vertiPos, horizPos, finColumn3Width, rowTotalTemplate.valueAlign, 0);
+            if (rowTotalTemplate.isBold) {
+                boldTable[vertiPos][horizPos] = +1;
+                boldTable[vertiPos][horizPos + finColumn3Width] = -1;
+            }
+        }
 
         Collection<byte[]> dataset = new LinkedList<>();
         dataset.add(ESCUtils.setLineSpacing(printerParams.reducedLineSpacingValue()));
         dataset.add(ESCUtils.setBoldEnabled(false));
         dataset.add(ESCUtils.setTextAlignment(TextAlign.ALIGN_LEFT));
 
-
         for (int prnRowIndex = 0; prnRowIndex < charTableH; prnRowIndex ++) {
             StringBuilder sb = new StringBuilder(charTable[prnRowIndex].length);
-            sb.append(charTable[prnRowIndex]);
+            for (int prnColIndex=0; prnColIndex<maxPrintW; prnColIndex++) {
+                if (boldTable[prnRowIndex][prnColIndex] > 0) {
+                    sb.append(ESCUtils.toUnicodeCharacter(ESCUtils.setBoldEnabled(true)));
+                } else if (boldTable[prnRowIndex][prnColIndex] < 0) {
+                    sb.append(ESCUtils.toUnicodeCharacter(ESCUtils.setBoldEnabled(false)));
+                }
+                sb.append(charTable[prnRowIndex][prnColIndex]);
+            }
             dataset.add(sb.toString().getBytes(charset.getEncodingStdName()));
         }
+
+
 
         dataset.add(ESCUtils.nextLine(1));
         dataset.add(ESCUtils.setLineSpacingDefault());
         dataset.add("---> aaa\n".getBytes(charset.getEncodingStdName()));
         return dataset;
     }
+
+    private void printTextIntoCell(char[][] charTable, CharSequence text, int top, int cellLeft, int cellWidth, TextAlign align, int startPadding) {
+        int printLen = Math.min(text.length(), (cellWidth - startPadding));
+        int index = (align == TextAlign.ALIGN_RIGHT)
+                ? cellLeft + cellWidth - (startPadding + printLen)
+                : cellLeft + startPadding;
+        for (int i=0; i<printLen; i++, index++) {
+            charTable[top][index] = text.charAt(i);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void printStartHorizontalBorder(char[] dst) {
         final int len = dst.length;
@@ -394,6 +522,13 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
                     splitColumn1[i] = TextUtils.splitTextByLines(valueItem, (finColumn1Width - finStartPaddingColumnOne));
                 }
             }
+        }
+    }
+
+    private void checkAndSplitTotalTitle() {
+        final int actualCellWidth = finColumn1Width + 1 + finColumn2Width - finStartPaddingColumnOne;
+        if (totalTitleText[0].length() > actualCellWidth) {
+            totalTitleText = TextUtils.splitTextByLines(totalTitleText[0], actualCellWidth);
         }
     }
 

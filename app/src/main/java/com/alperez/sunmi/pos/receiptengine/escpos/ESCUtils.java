@@ -10,6 +10,13 @@ public final class ESCUtils {
     public static final byte GS =  0x1D;// Group separator
     public static final byte LF =  0x0A;// Print and wrap (horizontal orientation)
 
+    public static char[] toUnicodeCharacter(byte[] bbb) {
+        char[] ccc = new char[bbb.length];
+        for (int i=0; i<bbb.length; i++) {
+            ccc[i] = (char) (bbb[i] & 0x000000FF);
+        }
+        return ccc;
+    }
 
     /**
      * ESC '@'
