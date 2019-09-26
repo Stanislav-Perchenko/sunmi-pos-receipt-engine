@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         vTxtInProgress.setVisibility(View.GONE);
 
         try {
-            String templateJson = FileUtils.loadAsset(this, /*"template_test_value.json"*//*"table_templates.json"*/   "receipt_template.json" /*"composite_table.json"*/);
+            String templateJson = FileUtils.loadAsset(this, /*"template_test_value.json"*//*"table_templates.json"*/   /*"receipt_template.json"*/ "composite_table.json");
             JSONObject jTemplate = new JSONObject(templateJson);
 
             String dataJson = FileUtils.loadAsset(this, "receipt_data.json");

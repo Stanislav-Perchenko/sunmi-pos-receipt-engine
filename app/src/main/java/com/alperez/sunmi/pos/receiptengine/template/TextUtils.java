@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 final class TextUtils {
 
@@ -161,6 +162,30 @@ next_line:
             if (ch != toRemove) sb.append(ch);
         }
         return sb.toString();
+    }
+
+
+    public static String formatPrice(long amount, int scale, boolean separateThousands) {
+
+        double value = amount;
+        for (int i=0; i<scale; i++) value /= 10;
+
+        return (separateThousands)
+                ? String.format("%,."+scale+"f", value, Locale.ENGLISH)
+                : String.format("%."+scale+"f", value, Locale.ENGLISH);
+    }
+
+    public static String formatPrice(double value, int scale, boolean separateThousands) {
+        return (separateThousands)
+                ? String.format("%,."+scale+"f", value, Locale.ENGLISH)
+                : String.format("%."+scale+"f", value, Locale.ENGLISH);
+    }
+
+    //TODO Make Unit test for this
+    public static double buildPriceValue(long amount, int scale) {
+        double value = amount;
+        for (int i=0; i<scale; i++) value /= 10;
+        return value;
     }
 
     private TextUtils() { }

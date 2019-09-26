@@ -172,13 +172,14 @@ main_cycle: while (!released.get()) {
                 for (byte[] bbb : task.data) {
                     print_os.write(bbb);
                 }
+                print_os.flush();
                 notifySuccess(task.callback);
             } catch (IOException e) {
                 notifyError(task.callback, getLastPrinterError(), e);
             }
 
             // Protection delay (ensure no printer input buffer overflow)
-            try { Thread.sleep(BuildConfig.DEBUG ? 150 : 150); } catch (InterruptedException e) { }
+            try { Thread.sleep(BuildConfig.DEBUG ? 250 : 85); } catch (InterruptedException e) { }
 
         } // main thread cycle
     } //work()

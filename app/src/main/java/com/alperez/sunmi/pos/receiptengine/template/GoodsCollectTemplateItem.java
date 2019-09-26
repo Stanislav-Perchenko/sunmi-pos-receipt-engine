@@ -3,6 +3,7 @@ package com.alperez.sunmi.pos.receiptengine.template;
 import androidx.annotation.NonNull;
 
 import com.alperez.sunmi.pos.receiptengine.escpos.Charset;
+import com.alperez.sunmi.pos.receiptengine.escpos.ESCUtils;
 import com.alperez.sunmi.pos.receiptengine.parammapper.JsonMappableEntity;
 import com.alperez.sunmi.pos.receiptengine.parammapper.ParameterValueMapper;
 import com.alperez.sunmi.pos.receiptengine.print.PosPrinterParams;
@@ -11,8 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class GoodsCollectTemplateItem extends BaseTemplateItem {
 
@@ -133,9 +134,9 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         checkAndSplitColumn1Content();
 
 
-
-        int[] numPrintedRowsForTableRows = new int[nCollectedItems + 2];
-        for (int i_row=0; i_row < (nCollectedItems + 1); i_row++) {
+        final int numOrigRows = nCollectedItems + 2;
+        int[] numPrintedRowsForTableRows = new int[numOrigRows];
+        for (int i_row=0; i_row < (numOrigRows - 1); i_row++) {
             int max = splitColumn1[i_row].length;
             if (max < splitColumn2[i_row].length) {
                 max = splitColumn2[i_row].length;
@@ -145,15 +146,144 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
             }
             numPrintedRowsForTableRows[i_row] = max;
         }
-        numPrintedRowsForTableRows[nCollectedItems + 1] = totalValueText.length;
+        numPrintedRowsForTableRows[numOrigRows-1] = totalValueText.length;
 
 
+        int charTableH = nCollectedItems+2+1; //num of horizontal lines;
+        for (int i=0; i < numOrigRows; i++) charTableH += numPrintedRowsForTableRows[i];
+        char[][] charTable = new char[charTableH][maxPrintW];
+        for (int origRowIndex=0, prnRowIndex = 0; origRowIndex <= numOrigRows; origRowIndex++) {
+            if (origRowIndex == 0) {
+                printStartHorizontalBorder(charTable[prnRowIndex ++]);
+            } else if (origRowIndex == (numOrigRows - 1)) {
+                printPreEndHorizontalBorder(charTable[prnRowIndex ++]);
+            } else if (origRowIndex == numOrigRows) { // End-of-cycle !!!!!!!!!!!!!
+                printEndHorizontalBorder(charTable[prnRowIndex ++]);
+                continue;
+            } else {
+                printMiddleHorizontalBorder(charTable[prnRowIndex ++]);
+            }
+            for (int j=0; j < numPrintedRowsForTableRows[origRowIndex]; j++) {
+                if (origRowIndex < (numOrigRows - 1)) {
+                    printContentEmptyRow(charTable[prnRowIndex ++]);
+                } else {
+                    printLastContentEmptyRow(charTable[prnRowIndex ++]);
+                }
+            }
+        }
 
 
+        Collection<byte[]> dataset = new LinkedList<>();
+        dataset.add(ESCUtils.setLineSpacing(printerParams.reducedLineSpacingValue()));
+        dataset.add(ESCUtils.setBoldEnabled(false));
+        dataset.add(ESCUtils.setTextAlignment(TextAlign.ALIGN_LEFT));
 
 
+        for (int prnRowIndex = 0; prnRowIndex < charTableH; prnRowIndex ++) {
+            StringBuilder sb = new StringBuilder(charTable[prnRowIndex].length);
+            sb.append(charTable[prnRowIndex]);
+            dataset.add(sb.toString().getBytes(charset.getEncodingStdName()));
+        }
 
-        return new ArrayList<>();
+        dataset.add(ESCUtils.nextLine(1));
+        dataset.add(ESCUtils.setLineSpacingDefault());
+        dataset.add("---> aaa\n".getBytes(charset.getEncodingStdName()));
+        return dataset;
+    }
+
+    private void printStartHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u250C';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1) {
+                dst[i] = '\u252C';
+            } else if (i == delim_2) {
+                dst[i] = '\u252C';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2510';
+    }
+
+    private void printMiddleHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u251C';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1) {
+                dst[i] = '\u253C';
+            } else if (i == delim_2) {
+                dst[i] = '\u253C';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2524';
+    }
+
+    private void printPreEndHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u251C';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1) {
+                dst[i] = '\u2534';
+            } else if (i == delim_2) {
+                dst[i] = '\u253C';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2524';
+    }
+
+
+    private void printEndHorizontalBorder(char[] dst) {
+        final int len = dst.length;
+        final int delim_2 = finColumn1Width + finColumn2Width + 2;
+        dst[0] = '\u2514';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_2) {
+                dst[i] = '\u2534';
+            } else {
+                dst[i] = '\u2500';
+            }
+        }
+        dst[len-1] = '\u2518';
+    }
+
+    private void printContentEmptyRow(char[] dst) {
+        final int len = dst.length;
+        final int delim_1 = finColumn1Width + 1;
+        final int delim_2 = delim_1 + finColumn2Width + 1;
+        dst[0] = '\u2502';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_1 || i == delim_2) {
+                dst[i] = '\u2502';
+            } else {
+                dst[i] = '\u0020';
+            }
+        }
+        dst[len-1] = '\u2502';
+    }
+
+    private void printLastContentEmptyRow(char[] dst) {
+        final int len = dst.length;
+        final int delim_2 = finColumn1Width + finColumn2Width + 2;
+        dst[0] = '\u2502';
+        for (int i=1; i < len-1; i++) {
+            if (i == delim_2) {
+                dst[i] = '\u2502';
+            } else {
+                dst[i] = '\u0020';
+            }
+        }
+        dst[len-1] = '\u2502';
     }
 
 
@@ -166,7 +296,7 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         for (int i=0; i < this.collectedItems.length; i++) {
             splitColumn1[i+1] = new String[]{this.collectedItems[i].categoryName};
             splitColumn2[i+1] = new String[]{""+this.collectedItems[i].collectedWeight};
-            splitColumn3[i+1] = new String[]{formatPrice(this.collectedItems[i].amount, this.collectedItems[i].currencyScale)};
+            splitColumn3[i+1] = new String[]{TextUtils.formatPrice(this.collectedItems[i].amount, this.collectedItems[i].currencyScale, isPriceSeparatedThousands)};
         }
     }
 
@@ -174,12 +304,12 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         double total = 0;
         int maxScale = 0;
         for (int i=0; i < this.collectedItems.length; i++) {
-            total += buildPriceValue(this.collectedItems[i].amount, this.collectedItems[i].currencyScale);
+            total += TextUtils.buildPriceValue(this.collectedItems[i].amount, this.collectedItems[i].currencyScale);
             if (maxScale < this.collectedItems[i].currencyScale) {
                 maxScale = this.collectedItems[i].currencyScale;
             }
         }
-        return new String[]{formatPrice(total, maxScale)};
+        return new String[]{TextUtils.formatPrice(total, maxScale, isPriceSeparatedThousands)};
     }
 
     private int calculateColumn3FinalWidth() {
@@ -267,29 +397,6 @@ public class GoodsCollectTemplateItem extends BaseTemplateItem {
         }
     }
 
-
-
-
-
-
-
-    //TODO Make Unit test for this
-    String formatPrice(long amount, int scale) {
-        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        return "152.60";
-    }
-
-    //TODO Make Unit test for this
-    String formatPrice(double value, int scale) {
-        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        return "152.60";
-    }
-
-    //TODO Make Unit test for this
-    double buildPriceValue(long amount, int scale) {
-        //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        return 152.60;
-    }
 
 
     /**********************************************************************************************/
