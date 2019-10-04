@@ -178,7 +178,6 @@ next_line:
         }
     }
 
-    //TODO Make Unit test for this
     public static double buildPriceValue(long amount, int scale) {
         double value = amount;
         for (int i=0; i<scale; i++) value /= 10;
