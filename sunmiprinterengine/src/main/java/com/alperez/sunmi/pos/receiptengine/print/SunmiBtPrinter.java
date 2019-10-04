@@ -7,15 +7,17 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
-import com.alperez.sunmi.pos.utils.IOUtils;
 import com.webssa.pda.sunmiprinterengine.BuildConfig;
 import com.webssa.pda.sunmiprinterengine.R;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,7 @@ final class SunmiBtPrinter implements PosPrinter {
 
     private static SunmiBtPrinter instance;
 
-    public static SunmiBtPrinter getInstance(Context ctx) {
+    static SunmiBtPrinter getInstance(Context ctx) {
         if (instance == null) {
             synchronized (SunmiBtPrinter.class) {
                 if (instance == null) {
@@ -99,9 +101,9 @@ final class SunmiBtPrinter implements PosPrinter {
                 PosPrinterParams other = (PosPrinterParams) obj;
                 return this.isUnidirectionPrintSupported() == other.isUnidirectionPrintSupported() &&
                         this.reducedLineSpacingValue() == other.reducedLineSpacingValue() &&
-                        this.characterScaleWidthLimits().equals(other.characterScaleWidthLimits()) &&
-                        this.characterScaleHeightLimits().equals(other.characterScaleHeightLimits())
-                        && this.lineLengthFromScaleWidth(1) == other.lineLengthFromScaleWidth(1);
+                        Arrays.equals(this.characterScaleWidthLimits(), other.characterScaleWidthLimits()) &&
+                        Arrays.equals(this.characterScaleHeightLimits(), other.characterScaleHeightLimits()) &&
+                        this.lineLengthFromScaleWidth(1) == other.lineLengthFromScaleWidth(1);
             }
         };
     }
@@ -279,4 +281,33 @@ class PrintTask {
         this.data = data;
         this.callback = callback;
     }
+}
+
+/**************************************************************************************************/
+class IOUtils {
+
+    @SuppressWarnings("CatchMayIgnoreException")
+    static void cloaeSilently(Closeable toClose) {
+        try {
+            toClose.close();
+        } catch (IOException e) { }
+    }
+
+    @Nullable
+    static BluetoothDevice getBtDeviceByAddress(BluetoothAdapter btAdapter, String address) {
+        for (BluetoothDevice device : btAdapter.getBondedDevices()) {
+            if (TextUtils.equals(device.getAddress(), address)) return device;
+        }
+        return null;
+    }
+
+    static BluetoothSocket connectBtDeviceFrcomm(BluetoothDevice device, UUID serviceChannelId) throws IOException {
+        BluetoothSocket socket;
+        socket = device.createRfcommSocketToServiceRecord(serviceChannelId);
+        socket.connect();
+        return  socket;
+    }
+
+
+    private IOUtils() {}
 }
