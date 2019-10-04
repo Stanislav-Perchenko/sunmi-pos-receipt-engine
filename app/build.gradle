@@ -41,10 +41,11 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                outputFileName = outputFile.name.replace('.apk', "-${versionName}.apk")
-
+            def flv = variant.getFlavorName()
+            def build_type = variant.getBuildType().getName()
+            def ver_name = variant.versionName
+            if (output.outputFileName != null && output.outputFileName.endsWith('.apk')) {
+                output.outputFileName = "sunmi_print_engine-${flv}-${build_type}-${ver_name}.apk"
             }
         }
     }
@@ -69,6 +70,8 @@ android {
 }
 
 dependencies {
+    implementation project(':sunmiprinterengine')
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.12'

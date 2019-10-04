@@ -10,9 +10,9 @@ import android.os.Message;
 
 import androidx.annotation.Nullable;
 
-import com.alperez.sunmi.pos.BuildConfig;
-import com.alperez.sunmi.pos.R;
 import com.alperez.sunmi.pos.utils.IOUtils;
+import com.webssa.pda.sunmiprinterengine.BuildConfig;
+import com.webssa.pda.sunmiprinterengine.R;
 
 import java.io.IOException;
 import java.io.OutputStream;

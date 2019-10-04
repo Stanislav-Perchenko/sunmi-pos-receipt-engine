@@ -1,13 +1,7 @@
 <resources>
     <string name="app_name">SunmiPOSReceiptEngine</string>
-
-    <string name="err_bt_not_supported">Bluetooth is not supported by the hardware</string>
-    <string name="err_bt_not_enabled">It looks like Bluetooth is off on this device. Please, turn it on</string>
-    <string name="err_bt_printer_not_found">POS Printer not found</string>
-    <string name="err_bt_printer_connect">Error connect to the internal POS printer</string>
-    <string name="err_print_dialog_message" formatted="false">Print failed - %s</string>
     <string name="print_ok_dialog_message">Print complete</string>
     <string name="txt_in_progress" formatted="false">Print tasks in queue - %d</string>
-
+    <string name="err_print_dialog_message" formatted="false">Print failed - %s</string>
     <string name="action_print">Print</string>
 </resources>

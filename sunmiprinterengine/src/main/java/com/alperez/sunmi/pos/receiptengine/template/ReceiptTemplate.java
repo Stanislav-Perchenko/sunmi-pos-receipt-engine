@@ -28,18 +28,6 @@ public final class ReceiptTemplate {
 
     private ReceiptTemplate() {}
 
-    /*public PrintMode getPrintMode() {
-        return printMode;
-    }
-
-    public Charset getCharset() {
-        return charset;
-    }
-
-    public List<ITemplateItem> getTemplateItems() {
-        return templateItems;
-    }*/
-
     private Collection<byte[]> getPrinterSetupCode(PosPrinterParams printerParams) {
         List<byte[]> data = new LinkedList<>();
         data.add(ESCUtils.initializePrinter());

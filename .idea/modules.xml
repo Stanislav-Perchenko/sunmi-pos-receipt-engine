@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SunmiPOSReceiptEngine.iml" filepath="$PROJECT_DIR$/SunmiPOSReceiptEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sunmiprinterengine/sunmiprinterengine.iml" filepath="$PROJECT_DIR$/sunmiprinterengine/sunmiprinterengine.iml" />
     </modules>
   </component>
 </project>

@@ -2,8 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.alperez.sunmi.pos">
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
