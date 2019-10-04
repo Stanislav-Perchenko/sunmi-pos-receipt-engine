@@ -95,8 +95,13 @@ final class SunmiBtPrinter implements PosPrinter {
 
             @Override
             public boolean equals(@Nullable Object obj) {
-                //TODO Implement this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                return true;
+                if (!(obj instanceof PosPrinterParams)) return false;
+                PosPrinterParams other = (PosPrinterParams) obj;
+                return this.isUnidirectionPrintSupported() == other.isUnidirectionPrintSupported() &&
+                        this.reducedLineSpacingValue() == other.reducedLineSpacingValue() &&
+                        this.characterScaleWidthLimits().equals(other.characterScaleWidthLimits()) &&
+                        this.characterScaleHeightLimits().equals(other.characterScaleHeightLimits())
+                        && this.lineLengthFromScaleWidth(1) == other.lineLengthFromScaleWidth(1);
             }
         };
     }
