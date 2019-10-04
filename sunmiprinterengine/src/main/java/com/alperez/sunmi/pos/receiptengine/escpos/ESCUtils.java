@@ -1,5 +1,7 @@
 package com.alperez.sunmi.pos.receiptengine.escpos;
 
+import android.graphics.Bitmap;
+
 import com.alperez.sunmi.pos.receiptengine.template.TextAlign;
 
 @SuppressWarnings("WeakerAccess")
@@ -20,7 +22,7 @@ public final class ESCUtils {
 
     /**
      * ESC '@'
-     * @return
+     * @return raw printed data bytes
      */
     public static byte[] initializePrinter() {
         byte[] result = new byte[2];
@@ -32,7 +34,7 @@ public final class ESCUtils {
     /**
      * ESC '2'
      * Sets line spacing to the default value - 30 dots
-     * @return
+     * @return raw printed data bytes
      */
     public static byte[] setLineSpacingDefault() {
         byte[] result = new byte[2];
@@ -45,7 +47,7 @@ public final class ESCUtils {
      * ESC '3' nDots
      * Sets line spacing to the requested value
      * @param nDots line spacing value [0..255]
-     * @return
+     * @return raw printed data bytes
      */
     public static byte[] setLineSpacing(int nDots) {
         if (nDots < 0) nDots = 0;
@@ -63,7 +65,7 @@ public final class ESCUtils {
      * only one or in both directions.
      * This is used for printing graphics for fine alignment
      * @param enabled true - unidirectional mode is enabled
-     * @return
+     * @return raw printed data bytes
      */
     public static byte[] setUnidirectionalPrintModeEnabled(boolean enabled) {
         byte[] result = new byte[3];
@@ -106,8 +108,8 @@ public final class ESCUtils {
     /**
      * ESC 'a' n
      * Select text justification
-     * @param align
-     * @return
+     * @param align alignment value
+     * @return raw printed data bytes
      */
     public static byte[] setTextAlignment(TextAlign align) {
         byte[] result = new byte[3];
@@ -120,8 +122,8 @@ public final class ESCUtils {
     /**
      * ESC 'E' enabled
      * Turn emphasized mode on/off
-     * @param enabled
-     * @return
+     * @param enabled defines if BOLD is enabled
+     * @return raw printed data bytes
      */
     public static byte[] setBoldEnabled(boolean enabled) {
         byte[] result = new byte[3];
@@ -135,7 +137,7 @@ public final class ESCUtils {
      * Scales start with 1 !!!
      * @param scaleWidth width scale in range [1..8]
      * @param scaleHeight height scale in range [1..8]
-     * @return
+     * @return raw printed data bytes
      */
     public static byte[] setCharacterScale(int scaleWidth, int scaleHeight) {
         int combinedScale = ((ensureCharScaleValue(scaleWidth) << 4) & 0xF0) | (ensureCharScaleValue(scaleHeight) & 0x0F);
@@ -160,6 +162,20 @@ public final class ESCUtils {
         for (int i = 0; i < lineNum; i++) result[i] = LF;
         return result;
     }
+
+    //Raster bitmap printing set mode
+    public static byte[] printBitmap(Bitmap bitmap, int mode){
+        byte[] bytes1  = new byte[4];
+        bytes1[0] = GS;
+        bytes1[1] = 0x76;
+        bytes1[2] = 0x30;
+        bytes1[3] = (byte) mode;
+
+        byte[] bytes2 = BytesUtil.getBytesFromBitMap(bitmap);
+        return BytesUtil.byteMerger(bytes1, bytes2);
+    }
+
+
 
     private ESCUtils() { }
 }

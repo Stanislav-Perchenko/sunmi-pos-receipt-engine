@@ -1,5 +1,7 @@
 package com.alperez.sunmi.pos.receiptengine.parammapper;
 
+import android.util.Base64;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -10,10 +12,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class ParamMapperImpl implements ParameterValueMapper {
     @Nullable
-    JSONObject dataJson;
+    private JSONObject dataJson;
 
     ParamMapperImpl(@Nullable JSONObject dataJson) {
         this.dataJson = dataJson;
@@ -74,16 +77,16 @@ public class ParamMapperImpl implements ParameterValueMapper {
                 if (i < (p_segs.length-1)) {
                     //Extract intermediate objects
                     if (arrIndex < 0) {
-                        currentJson = currentJson.getJSONObject(p_segs[i]);
+                        currentJson = Objects.requireNonNull(currentJson).getJSONObject(p_segs[i]);
                     } else {
-                        JSONArray jArr = currentJson.getJSONArray(getCleanArrayName(p_segs[i]));
+                        JSONArray jArr = Objects.requireNonNull(currentJson).getJSONArray(getCleanArrayName(p_segs[i]));
                         currentJson = jArr.getJSONObject(arrIndex);
                     }
                 } else {
                     //Extract final object
                     String extractedValue = (arrIndex < 0)
                             ? extractFinalValue(currentJson, p_segs[i], type)
-                            : extractFinalValue(currentJson.getJSONArray(getCleanArrayName(p_segs[i])), arrIndex, type);
+                            : extractFinalValue(Objects.requireNonNull(currentJson).getJSONArray(getCleanArrayName(p_segs[i])), arrIndex, type);
                     if (extractedValue != null) result = extractedValue;
                 }
             }
@@ -137,7 +140,7 @@ public class ParamMapperImpl implements ParameterValueMapper {
             if (end > start) {
                 try {
                     return Integer.parseInt(pName.substring(start+1, end));
-                } catch (NumberFormatException e) { }
+                } catch (NumberFormatException e) { /* Ignore */ }
             }
         }
         return -1;
@@ -157,8 +160,8 @@ public class ParamMapperImpl implements ParameterValueMapper {
 
             final String path = param.substring(0, typeDelimIndex).trim();
             final String type = param.substring(typeDelimIndex+1).trim();
-            if (!type.equals("byte[]")) {
-                throw new JSONException("A type of 'byte[]' is required. Got - "+type);
+            if (!"byte[]".equals(type) && !"base64".equals(type)) {
+                throw new JSONException("A type of 'byte[]' or 'base64' are allowed. Got - "+type);
             }
 
             final String[] p_segs = path.split("\\.");
@@ -170,15 +173,21 @@ public class ParamMapperImpl implements ParameterValueMapper {
                     //Extract intermediate objects
                     int arrIndex = optArrayIndex(p_segs[i]);
                     if (arrIndex < 0) {
-                        currentJson = currentJson.getJSONObject(p_segs[i]);
+                        currentJson = Objects.requireNonNull(currentJson).getJSONObject(p_segs[i]);
                     } else {
-                        JSONArray jArr = currentJson.getJSONArray(getCleanArrayName(p_segs[i]));
+                        JSONArray jArr = Objects.requireNonNull(currentJson).getJSONArray(getCleanArrayName(p_segs[i]));
                         currentJson = jArr.getJSONObject(arrIndex);
                     }
                 } else {
-                    JSONArray jArr = currentJson.getJSONArray(p_segs[i]);
-                    result = new byte[jArr.length()];
-                    for (int j=0; j<result.length; j++) result[j] = (byte)jArr.getInt(j);
+                    if (type.equals("byte[]")) {
+                        JSONArray jArr = Objects.requireNonNull(currentJson).getJSONArray(p_segs[i]);
+                        result = new byte[jArr.length()];
+                        for (int j = 0; j < result.length; j++) result[j] = (byte) jArr.getInt(j);
+                    } else //noinspection ConstantConditions
+                        if (type.equals("base64")) {
+                        String base64 = Objects.requireNonNull(currentJson).getString(p_segs[i]);
+                        result = Base64.decode(base64, Base64.NO_WRAP | Base64.NO_PADDING);
+                    }
                 }
             }
             return result;
@@ -210,21 +219,23 @@ public class ParamMapperImpl implements ParameterValueMapper {
                     //Extract intermediate objects
                     int arrIndex = optArrayIndex(p_segs[i]);
                     if (arrIndex < 0) {
-                        currentJson = currentJson.getJSONObject(p_segs[i]);
+                        currentJson = Objects.requireNonNull(currentJson).getJSONObject(p_segs[i]);
                     } else {
-                        JSONArray jArr = currentJson.getJSONArray(getCleanArrayName(p_segs[i]));
+                        JSONArray jArr = Objects.requireNonNull(currentJson).getJSONArray(getCleanArrayName(p_segs[i]));
                         currentJson = jArr.getJSONObject(arrIndex);
                     }
                 } else {
-                    JSONArray jArr = currentJson.getJSONArray(p_segs[i]);
+                    JSONArray jArr = Objects.requireNonNull(currentJson).getJSONArray(p_segs[i]);
 
 
+                    //noinspection SwitchStatementWithTooFewBranches
                     switch (type) {
                         case "CollectedGoodItem[]":
                             GoodsCollectTemplateItem.GoodsCollectDataItem[] data = new GoodsCollectTemplateItem.GoodsCollectDataItem[jArr.length()];
                             for (int j=0; j<jArr.length(); j++) {
                                 data[j] = new GoodsCollectTemplateItem.GoodsCollectDataItem(jArr.getJSONObject(j));
                             }
+                            //noinspection unchecked
                             result = (T[])data;
                             break;
                         default:

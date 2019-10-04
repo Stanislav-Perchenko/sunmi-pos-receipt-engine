@@ -68,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        printer.shutdown();
+        if (printer != null) {
+            printer.shutdown();
+        }
         super.onDestroy();
     }
 
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             startPrintSection();
             printer.print(itr.next(), printCallback);
         }
+        //noinspection ArraysAsListWithZeroOrOneArgument
         printer.print(Arrays.asList(ESCUtils.nextLine(3)), null);
     }
 
